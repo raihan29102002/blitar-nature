@@ -16,13 +16,15 @@ state([
     'name' => '',
     'email' => '',
     'password' => '',
-    'password_confirmation' => ''
+    'password_confirmation' => '',
+    'role' => 'wisatawan'
 ]);
 
 rules([
     'name' => ['required', 'string', 'max:255'],
     'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
     'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+    'role' => ['required', 'in:admin,wisatawan'],
 ]);
 
 $register = function () {
@@ -34,9 +36,12 @@ $register = function () {
 
     Auth::login($user);
 
-    $this->redirect(route('dashboard', absolute: false), navigate: true);
-};
-
+    if ($user->role === 'admin') {
+    $this->redirect(route('admin.dashboard'), navigate: true);
+    } else {
+        $this->redirect(route('dashboard'), navigate: true);
+    }
+}
 ?>
 
 <div>
@@ -76,6 +81,15 @@ $register = function () {
                             name="password_confirmation" required autocomplete="new-password" />
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        </div>
+
+        <div class="mt-4">
+            <x-input-label for="role" :value="__('Role')" />
+            <select wire:model="role" id="role" name="role" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                <option value="wisatawan">Wisatawan</option>
+                <option value="admin">Admin</option>
+            </select>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
         <div class="flex items-center justify-end mt-4">

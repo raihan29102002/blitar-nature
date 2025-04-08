@@ -2,7 +2,7 @@
 
 use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Auth;
 use function Livewire\Volt\form;
 use function Livewire\Volt\layout;
 
@@ -17,7 +17,13 @@ $login = function () {
 
     Session::regenerate();
 
-    $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+    $role = Auth::user()->role;
+
+    if ($role === 'admin') {
+        $this->redirectIntended(default: route('admin.dashboard', absolute: false), navigate: true);
+    } else {
+        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+    }
 };
 
 ?>
