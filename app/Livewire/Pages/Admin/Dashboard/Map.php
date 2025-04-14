@@ -11,7 +11,7 @@ class Map extends Component
 
     public function mount()
     {
-        $this->wisata = Wisata::select('nama', 'koordinat_x', 'koordinat_y')->get();
+        $this->wisata = Wisata::select('nama', 'koordinat_x', 'koordinat_y', 'kategori')->get();
     }
 
     public function render()

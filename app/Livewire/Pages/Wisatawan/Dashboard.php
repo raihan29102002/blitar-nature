@@ -9,6 +9,6 @@ class Dashboard extends Component
     public function render()
     {
         return view('livewire.pages.wisatawan.dashboard')
-        ->layout('layouts.app');
+        ->layout('layouts.guest');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Pages\Admin\Dashboard as AdminDashboard;
@@ -11,12 +12,30 @@ use App\Livewire\Pages\Admin\Pengunjung as PengunjungWisata;
 use App\Livewire\Pages\Admin\RatingFeedback as Rating;
 use App\Livewire\Pages\Admin\Akun as Akun;
 use App\Livewire\Pages\Wisatawan\Dashboard as UserDashboard;
+use App\Livewire\Pages\Wisatawan\Home;
+use App\Livewire\Pages\Wisatawan\Profil;
+use App\Livewire\Pages\Wisatawan\DetailWisata;
+use App\Livewire\Pages\Wisatawan\Wisata as WisatawanWisata;
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/dashboard', UserDashboard::class)
-    ->name('dashboard');
+Route::get('/wisatawan/dashboard', UserDashboard::class)
+    ->middleware(['auth', 'role:wisatawan'])
+    ->name('wisatawan.dashboard');
+
+Route::get('/wisatawan/wisata', WisatawanWisata::class)
+    ->middleware(['auth', 'role:wisatawan'])
+    ->name('wisata');
+Route::get('/wisatawan/home', Home::class)
+    ->middleware(['auth', 'role:wisatawan'])
+    ->name('home');
+Route::get('/wisatawan/profil', Profil::class)
+    ->middleware(['auth', 'role:wisatawan'])
+    ->name('profil');
+Route::get('/wisatawan/detail-wisata', DetailWisata::class)
+    ->middleware(['auth', 'role:wisatawan'])
+    ->name('detail');
 
 Route::get('/admin/dashboard', AdminDashboard::class)
     ->middleware(['auth', 'role:admin'])
@@ -42,12 +61,12 @@ Route::get('/admin/akun', Akun::class)
     ->middleware(['auth', 'role:admin'])
     ->name('admin.akun');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-Route::middleware([RoleMiddleware::class.':wisatawan'])
-    ->get('/dashboard', UserDashboard::class)
-    ->name('dashboard');
 require __DIR__.'/auth.php';
+
