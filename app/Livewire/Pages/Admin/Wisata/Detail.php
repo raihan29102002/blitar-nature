@@ -13,6 +13,7 @@ class Detail extends Component
     {
         $this->wisata = Wisata::findOrFail($id);
     }
+    protected $layout = 'layouts.admin';
 
     public function render()
     {

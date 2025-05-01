@@ -91,6 +91,7 @@ class Form extends Component
         return redirect()->route('admin.wisata')->with('message', 'Data berhasil disimpan!');
 
     }
+    protected $layout = 'layouts.admin';
 
     public function render()
     {

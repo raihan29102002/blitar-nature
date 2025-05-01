@@ -19,11 +19,11 @@ $login = function () {
 
     $role = Auth::user()->role;
 
-    if ($role === 'admin') {
-        $this->redirectIntended(default: route('admin.dashboard', absolute: false), navigate: true);
-    } else {
-        $this->redirectIntended(default: route('wisatawan.dashboard', absolute: false), navigate: true);
-    }
+    // if ($role === 'admin') {
+    //     $this->redirectIntended(default: route('admin.dashboard', absolute: false), navigate: true);
+    // } else {
+    //     $this->redirectIntended(default: route('wisatawan.dashboard', absolute: false), navigate: true);
+    // }
 };
 
 ?>

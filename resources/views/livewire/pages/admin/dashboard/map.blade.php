@@ -1,5 +1,5 @@
-<div class="bg-white p-4 rounded-lg shadow-sm">
-    <h2 class="text-lg font-semibold text-gray-900 mb-3">Peta Wisata</h2>
+<div class="bg-white p-4 rounded-lg shadow-sm dark:bg-gray-800">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Peta Wisata</h2>
     <div id="map" style="width: 100%; height: 400px;"></div>
 </div>
 

@@ -11,6 +11,7 @@ class RatingFeedback extends Model {
 
     protected $fillable = ['wisata_id', 'user_id', 'rating', 'feedback', 'response_admin'];
 
+
     public function wisata() {
         return $this->belongsTo(Wisata::class);
     }

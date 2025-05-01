@@ -4,14 +4,14 @@
         <div class="flex justify-between h-16 items-center">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="{{ route('home') }}" class="text-xl font-bold text-green-700">
+                <a href="{{ route('wisatawan.dashboard') }}" class="text-xl font-bold text-green-700">
                     Blitar Nature Explore
                 </a>
             </div>
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-6">
-                <a href="{{ route('home') }}" class="text-gray-700 hover:text-green-700 transition">Beranda</a>
+                <a href="{{ route('wisatawan.dashboard') }}" class="text-gray-700 hover:text-green-700 transition">Beranda</a>
                 <a href="{{ route('wisata') }}" class="text-gray-700 hover:text-green-700 transition">Wisata</a>
                 <a href="{{ route('profil') }}" class="text-gray-700 hover:text-green-700 transition">Profil</a>
             </div>
@@ -36,7 +36,7 @@
 
     <!-- Mobile Menu -->
     <div x-show="open" class="md:hidden px-4 pb-4">
-        <a href="{{ route('home') }}" class="block py-2 text-gray-700 hover:text-green-700">Beranda</a>
+        <a href="{{ route('wisatawan.dashboard') }}" class="block py-2 text-gray-700 hover:text-green-700">Beranda</a>
         <a href="{{ route('wisata') }}" class="block py-2 text-gray-700 hover:text-green-700">Wisata</a>
         <a href="{{ route('profil') }}" class="block py-2 text-gray-700 hover:text-green-700">Profil</a>
     </div>

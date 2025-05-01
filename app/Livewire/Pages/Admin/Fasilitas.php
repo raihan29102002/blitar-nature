@@ -62,6 +62,7 @@ class Fasilitas extends Component
         session()->flash('message', 'Fasilitas berhasil dihapus.');
         $this->loadFasilitas();
     }
+    
 
     public function render()
     {

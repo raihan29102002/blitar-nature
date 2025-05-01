@@ -39,6 +39,7 @@ class Wisata extends Component
         'harga_tiket' => 'required|numeric',
         'status_tiket' => 'required',
     ];
+    protected $layout = 'layouts.admin';
     public function render()
     {
         $wisatas = WisataModel::where('nama', 'like', '%' . $this->search . '%')
@@ -106,6 +107,7 @@ class Wisata extends Component
 
         $this->isModalOpen = true;
     }
+
 
     public function deleteWisata($id)
     {

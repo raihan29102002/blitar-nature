@@ -36,11 +36,11 @@ $register = function () {
 
     Auth::login($user);
 
-    if ($user->role === 'admin') {
-    $this->redirect(route('admin.dashboard'), navigate: true);
-    } else {
-        $this->redirect(route('dashboard'), navigate: true);
-    }
+    // if ($user->role === 'admin') {
+    // $this->redirect(route('admin.dashboard'), navigate: true);
+    // } else {
+    //     $this->redirect(route('wisatawan.dashboard'), navigate: true);
+    // }
 }
 ?>
 

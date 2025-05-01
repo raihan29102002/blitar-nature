@@ -1,11 +1,11 @@
-<div class="max-w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
+<div class="max-w-full bg-white rounded-lg shadow-sm dark:bg-gray-800 p-4 md:p-6">
     <div class="flex justify-between mb-5">
         <div>
-            <h2 class="text-lg font-semibold text-gray-900">Grafik Kunjungan Wisata</h2>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Grafik Kunjungan Wisata</h2>
         </div>
         <div>
-            <label for="tahun" class="font-medium text-gray-700">Pilih Tahun:</label>
-            <select wire:model.live="tahun" id="tahun" class="border rounded p-1 bg-gray-100 text-gray-900">
+            <label for="tahun" class="font-medium text-gray-700 dark:text-gray-300">Pilih Tahun:</label>
+            <select wire:model.live="tahun" id="tahun" class="border rounded p-1 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white">
                 <option value="">Semua Tahun</option>
                 @foreach ($tahunList as $thn)
                     <option value="{{ $thn }}">{{ $thn }}</option>
