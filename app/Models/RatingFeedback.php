@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RatingFeedback extends Model {
     use HasFactory;
-    protected $table = 'rating_feedback';
+    protected $table = 'rating_feedbacks';
 
     protected $fillable = ['wisata_id', 'user_id', 'rating', 'feedback', 'response_admin'];
 
