@@ -18,6 +18,6 @@ class Detail extends Component
     public function render()
     {
         return view('livewire.pages.admin.wisata.detail')
-            ->layout('layouts.admin'); // Sesuaikan dengan layout admin-mu
+            ->layout('layouts.admin'); 
     }
 }

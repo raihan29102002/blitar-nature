@@ -1,5 +1,5 @@
 <div class="p-6 bg-white shadow-md rounded-lg w-full min-h-screen">
-    <h1 class="text-2xl font-bold mb-6 text-gray-700">Data Pengunjung Wisata</h1>
+    <h1 class="text-3xl font-bold mt-6 mb-6 text-gray-700">Data Pengunjung Wisata</h1>
 
     <button wire:click="resetFields" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" x-data="{ open: false }" @click="open = true">
         ➕ Tambah Data Pengunjung

@@ -3,87 +3,60 @@
 namespace App\Livewire\Pages\Admin;
 
 use Livewire\Component;
-use App\Models\RatingFeedback as RatingAdmin;
+use App\Models\RatingFeedback as RatingFeedbackModel;
 use Illuminate\Support\Facades\Auth;
+use Livewire\WithPagination;
 
 class RatingFeedback extends Component
 {
-    public $wisataId, $rating, $feedback;
-    public $reviews = [];
-    public $responseAdmin = []; // Menyimpan input respons admin
+    use WithPagination;
+    protected $middleware = ['auth', 'role:admin'];
+    public $responText;
+    public $selectedReviewId;
+    public $editMode = false;
 
-    protected $rules = [
-        'rating' => 'required|numeric|min:1|max:5',
-        'feedback' => 'nullable|string|max:255',
-    ];
-
-    public function mount($wisataId)
-    {
-        $this->wisataId = $wisataId;
-        $this->loadReviews();
-    }
-
-    public function loadReviews()
-    {
-        $this->reviews = RatingAdmin::where('wisata_id', $this->wisataId)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        // Inisialisasi response admin untuk setiap feedback
-        foreach ($this->reviews as $review) {
-            $this->responseAdmin[$review->id] = $review->response_admin;
-        }
-    }
-
-    public function submit()
-    {
-        $this->validate();
-
-        // Cek apakah user sudah memberikan rating sebelumnya
-        $existingRating = RatingAdmin::where('wisata_id', $this->wisataId)
-            ->where('user_id', Auth::id())
-            ->exists();
-
-        if ($existingRating) {
-            session()->flash('error', 'Anda sudah memberi rating.');
-            return;
-        }
-
-        // Simpan rating ke database
-        RatingAdmin::create([
-            'wisata_id' => $this->wisataId,
-            'user_id' => Auth::id(),
-            'rating' => $this->rating,
-            'feedback' => $this->feedback,
-        ]);
-
-        // Reset input
-        $this->rating = null;
-        $this->feedback = null;
-
-        // Muat ulang ulasan
-        $this->loadReviews();
-
-        session()->flash('success', 'Rating dan ulasan berhasil dikirim!');
-    }
-
-    public function submitResponse($reviewId)
-    {
-        $review = RatingAdmin::find($reviewId);
-        if ($review) {
-            $review->response_admin = $this->responseAdmin[$reviewId] ?? null;
-            $review->save();
-            session()->flash('success', 'Tanggapan admin berhasil diperbarui.');
-            $this->loadReviews(); 
-        }
-    }
+    protected $listeners = ['simpanRespon'];
 
     public function render()
     {
-        $averageRating = RatingAdmin::where('wisata_id', $this->wisataId)->avg('rating');
-
+        $reviews = RatingFeedbackModel::with('wisata', 'user') // Mengambil data wisata dan user
+        ->orderByDesc('created_at') // Mengurutkan berdasarkan waktu pembuatan review
+        ->paginate(10);
         return view('livewire.pages.admin.rating-feedback', [
-            'averageRating' => $averageRating,
+            'reviews' => $reviews,
+        ])->layout('layouts.admin');;
+    }
+
+    public function respon($id)
+    {
+        $this->selectedReviewId = $id;
+        $this->responText = '';  // Reset input teks setiap kali klik tombol respon
+        $this->editMode = true;   // Tampilkan modal respon
+    }
+
+    public function simpanRespon()
+    {
+        // Validasi input respon admin
+        $this->validate([
+            'responText' => 'required|string|max:1000',
         ]);
+
+        // Cari review berdasarkan ID
+        $review = RatingFeedbackModel::find($this->selectedReviewId);
+        
+        // Simpan respon admin
+        $review->respon_admin = $this->responText;
+        $review->save();
+
+        // Tampilkan pesan sukses
+        session()->flash('message', 'Respon berhasil disimpan.');
+
+        // Tutup modal setelah respon disimpan
+        $this->editMode = false;
+    }
+
+    public function closeModal()
+    {
+        $this->editMode = false; // Tutup modal tanpa simpan
     }
 }

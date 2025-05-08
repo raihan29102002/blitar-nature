@@ -55,6 +55,11 @@
                                         <i class="fi fi-rr-users mr-2"></i> Data Pengunjung
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="/admin/rating" class="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
+                                        <i class="fi fi-rr-users mr-2"></i> Data Review Pengunjung
+                                    </a>
+                                </li>
                             </ul>
                             <div class="absolute bottom-4 left-0 w-full px-3">
                                 <ul class="mt-4 space-y-4 font-medium dark:text-white border-t border-gray-300 dark:border-gray-600 pt-4">

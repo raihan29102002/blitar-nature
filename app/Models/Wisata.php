@@ -11,7 +11,16 @@ class Wisata extends Model {
 
     protected $table = 'wisatas';
     protected $fillable = ['nama', 'deskripsi', 'koordinat_x', 'koordinat_y', 'status_pengelolaan', 'harga_tiket', 'status_tiket'];
-
+    protected $casts = [
+        'koordinat_x' => 'float',
+        'koordinat_y' => 'float',
+    ];
+    
+    public function scopeWithValidCoordinates($query)
+    {
+        return $query->whereNotNull('koordinat_x')
+                    ->whereNotNull('koordinat_y');
+    }
     public function kunjungans() {
         return $this->hasMany(Kunjungan::class);
     }

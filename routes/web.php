@@ -23,7 +23,7 @@ Route::get('/wisatawan/wisata', WisatawanWisata::class)
 Route::get('/wisatawan/home', Home::class)
     ->name('home');
 Route::get('/wisatawan/profil', Profil::class)
-    ->middleware(['auth', 'role:wisatawan'])
+    ->middleware(['auth'])
     ->name('profil');
     Route::get('/wisata/{id}', DetailWisata::class)
     ->name('wisata.detail');
