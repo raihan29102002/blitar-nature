@@ -42,12 +42,12 @@
                                 </li>
                                 <li>
                                     <a href="/admin/wisata" class="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                                        <i class="fi fi-rr-map-marker mr-2"></i> Menu Wisata
+                                        <i class="fi fi-rr-map-marker mr-2"></i> Data Wisata
                                     </a>
                                 </li>
                                 <li>
                                     <a href="/admin/fasilitas" class="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-                                        <i class="fi fi-rr-tools mr-2"></i> Menu Fasilitas
+                                        <i class="fi fi-rr-tools mr-2"></i> Data Fasilitas
                                     </a>
                                 </li>
                                 <li>

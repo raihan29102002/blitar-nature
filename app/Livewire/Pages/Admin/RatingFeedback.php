@@ -16,11 +16,26 @@ class RatingFeedback extends Component
     public $editMode = false;
 
     protected $listeners = ['simpanRespon'];
+    public $search = '';
+
+    protected $updatesQueryString = ['search']; // optional: untuk menyimpan search di URL
+
+    public function updatingSearch()
+    {
+        $this->resetPage(); // Reset ke halaman pertama saat input pencarian berubah
+    }
 
     public function render()
     {
-        $reviews = RatingFeedbackModel::with('wisata', 'user') // Mengambil data wisata dan user
-        ->orderByDesc('created_at') // Mengurutkan berdasarkan waktu pembuatan review
+        $reviews = RatingFeedbackModel::with('wisata', 'user')
+        ->when($this->search, function ($query) {
+            $query->whereHas('user', function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%');
+            })->orWhereHas('wisata', function ($q) {
+                $q->where('nama', 'like', '%' . $this->search . '%');
+            });
+        })
+        ->orderByDesc('created_at')
         ->paginate(10);
         return view('livewire.pages.admin.rating-feedback', [
             'reviews' => $reviews,

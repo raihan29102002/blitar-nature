@@ -14,6 +14,7 @@ use App\Livewire\Pages\Wisatawan\Home;
 use App\Livewire\Pages\Wisatawan\Profil;
 use App\Livewire\Pages\Wisatawan\DetailWisata;
 use App\Livewire\Pages\Wisatawan\Wisata as WisatawanWisata;
+use App\Http\Controllers\GoogleController;
 
 Route::get('/', UserDashboard::class)
     ->name('wisatawan.dashboard');
@@ -58,6 +59,8 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle']);
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
 require __DIR__.'/auth.php';
 

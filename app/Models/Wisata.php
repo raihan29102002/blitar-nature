@@ -28,7 +28,7 @@ class Wisata extends Model {
         return $this->hasMany(Media::class);
     }
     public function fasilitas() {
-        return $this->belongsToMany(Fasilitas::class, 'fasilitas_wisata')
+        return $this->belongsToMany(Fasilitas::class, 'fasilitas_wisata', 'wisata_id', 'fasilitas_id')
             ->withTimestamps();
     }
     public function ratings() {

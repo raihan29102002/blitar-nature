@@ -24,6 +24,18 @@
             <p><strong>Status Pengelola:</strong> {{ $wisata->status_pengelolaan }}</p>
             <p><strong>Kategori:</strong> {{ $wisata->kategori }}</p>
         </div>
+        <div class="bg-white rounded-lg shadow p-4 mt-4">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Fasilitas yang Tersedia</h2>
+            @if($wisata->fasilitas && $wisata->fasilitas->isNotEmpty())
+                <ul class="list-disc pl-5 text-gray-600 space-y-1">
+                    @foreach($wisata->fasilitas as $fasilitas)
+                        <li>{{ $fasilitas->nama_fasilitas }}</li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-gray-500 italic">Belum ada fasilitas yang tercatat untuk wisata ini.</p>
+            @endif
+        </div>
     </div>
 
 

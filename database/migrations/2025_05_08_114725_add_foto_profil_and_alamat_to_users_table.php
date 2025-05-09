@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('wisatas', function (Blueprint $table) {
-            $table->enum('kategori', ['pantai', 'pegunungan', 'air terjun', 'perairan', 'hutan', 'perkemahan', 'lainnya'])
-            ->after('deskripsi')
-            ->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('foto_profil')->nullable()->after('email'); // path atau nama file
+            $table->text('alamat')->nullable()->after('foto_profil');
         });
     }
 
@@ -23,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('wisatas', function (Blueprint $table) {
-            $table->dropColumn('kategori');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['foto_profil', 'alamat']);
         });
     }
 };

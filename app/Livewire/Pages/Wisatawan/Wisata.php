@@ -21,6 +21,7 @@ class Wisata extends Component
 
     protected $listeners = ['userLocationUpdated'];
     protected $updatesQueryString = ['search', 'filter'];
+    
 
     public function updatingSearch()
     {
@@ -64,24 +65,36 @@ class Wisata extends Component
             ->withSum('kunjungans', 'jumlah');
 
         if ($this->search) {
-                $query->where('nama', 'like', '%' . $this->search . '%');
+            $query->where('nama', 'like', '%' . $this->search . '%');
         }
 
-        if ($this->filter === 'lokasi' && $this->userLat && $this->userLng) {
-            $query->withValidCoordinates();
-            $collection = $query->get();
-            $collection = $this->hitungJarakBatched($collection)->sortBy('jarak')->values();
-            return $this->convertToPaginator($this->prepareWisataData($collection));
+        $query->withValidCoordinates();
+
+        $collection = $query->get();
+
+        // ✅ Selalu hitung jarak jika user koordinat tersedia
+        if ($this->userLat && $this->userLng) {
+            $collection = $this->hitungJarakBatched($collection);
+        } else {
+            // Jika lokasi belum tersedia, set jarak ke null
+            $collection->each(function ($wisata) {
+                $wisata->jarak = null;
+            });
         }
 
-        if ($this->filter === 'rating') {
-            $query->orderByDesc('ratings_avg_rating');
+        // 🔁 Urutkan berdasarkan filter
+        if ($this->filter === 'lokasi') {
+            $collection = $collection->sortBy('jarak')->values();
+        } elseif ($this->filter === 'rating') {
+            $collection = $collection->sortByDesc('ratings_avg_rating')->values();
         } elseif ($this->filter === 'pengunjung') {
-            $query->orderByDesc('kunjungans_sum_jumlah');
+            $collection = $collection->sortByDesc('kunjungans_sum_jumlah')->values();
         }
 
-        return $this->convertToPaginator($this->prepareWisataData($query->get()));
+        return $this->convertToPaginator($this->prepareWisataData($collection));
     }
+
+
 
     private function prepareWisataData($collection)
     {
@@ -114,10 +127,9 @@ class Wisata extends Component
     {
         if (!$this->userLat || !$this->userLng) return $wisatas;
 
-        // Filter wisata dengan koordinat valid
         $validWisatas = $wisatas->filter(function($w) {
             return !is_null($w->koordinat_x) && !is_null($w->koordinat_y);
-        });
+        })->values();
 
         if ($validWisatas->isEmpty()) {
             \Log::warning('Tidak ada wisata dengan koordinat valid untuk dihitung jarak');
@@ -144,28 +156,18 @@ class Wisata extends Component
         $data = $response->json();
         $elements = $data['rows'][0]['elements'] ?? [];
 
-        $validWisatas = $wisatas->filter(function($w) {
-            // Pastikan format koordinat benar
-            $lat = (float)$w->koordinat_x;
-            $lng = (float)$w->koordinat_y;
-            return $lat >= -90 && $lat <= 90 && 
-                   $lng >= -180 && $lng <= 180;
-        });
-        \Log::debug('Sample coordinates:', [
-            'wisata_1' => [
-                'id' => $validWisatas->first()->id,
-                'nama' => $validWisatas->first()->nama,
-                'lat' => $validWisatas->first()->koordinat_x,
-                'lng' => $validWisatas->first()->koordinat_y
-            ],
-            'user_location' => [
-                'lat' => $this->userLat,
-                'lng' => $this->userLng
-            ]
-        ]);
+        // Sisipkan hasil jarak ke item wisata
+        foreach ($validWisatas as $index => $wisata) {
+            if (isset($elements[$index]['distance']['value'])) {
+                $wisata->jarak = $elements[$index]['distance']['value'] / 1000; // dalam KM
+            } else {
+                $wisata->jarak = null;
+            }
+        }
 
         return $wisatas;
     }
+
 
 
     private function getResizedImageUrl($imageUrl)

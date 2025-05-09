@@ -7,6 +7,9 @@ use App\Models\Kunjungan;
 use App\Models\Wisata;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
+use App\Imports\KunjunganImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\KunjunganExport;
 
 
 class Pengunjung extends Component
@@ -16,6 +19,17 @@ class Pengunjung extends Component
     public $wisata_id, $jumlah, $bulan, $tahun;
     public $kunjunganId;
     public $editMode = false;
+    public $excelFile;
+    public function importExcel()
+    {
+        $this->validate([
+            'excelFile' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new KunjunganImport, $this->excelFile);
+
+        session()->flash('message', 'Data berhasil diimpor!');
+    }
     
 
     public function mount()
@@ -88,4 +102,9 @@ class Pengunjung extends Component
             'wisataList' => Wisata::all(),
         ])->layout('layouts.admin');
     }
+    public function exportExcel()
+    {
+        return Excel::download(new KunjunganExport, 'data_kunjungan.xlsx');
+    }
+
 }

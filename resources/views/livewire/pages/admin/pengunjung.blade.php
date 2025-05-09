@@ -1,9 +1,33 @@
 <div class="p-6 bg-white shadow-md rounded-lg w-full min-h-screen">
     <h1 class="text-3xl font-bold mt-6 mb-6 text-gray-700">Data Pengunjung Wisata</h1>
 
-    <button wire:click="resetFields" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition" x-data="{ open: false }" @click="open = true">
-        ➕ Tambah Data Pengunjung
-    </button>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 flex-wrap">
+        <!-- Tombol Tambah -->
+        <button wire:click="resetFields"
+            class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition"
+            x-data="{ open: false }" @click="open = true">
+            ➕ Tambah Data Pengunjung
+        </button>
+
+        <!-- Form Import dan Export Excel -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <form wire:submit.prevent="importExcel" enctype="multipart/form-data"
+                class="flex items-center gap-2">
+                <input type="file" wire:model="excelFile"
+                    class="text-sm text-gray-700 border border-gray-300 rounded-md p-1 bg-white">
+                <button type="submit"
+                    class="bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
+                    📥 Import Excel
+                </button>
+            </form>
+
+            <button wire:click="exportExcel"
+                class="bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow hover:bg-emerald-700 transition">
+                📤 Export Excel
+            </button>
+        </div>
+    </div>
+    
 
     @if (session()->has('message'))
         <div class="bg-green-100 text-green-800 p-2 mt-4 rounded">

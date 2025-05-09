@@ -6,10 +6,14 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
 use App\Models\Wisata as WisataModel;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\WisataImport;
+use App\Exports\WisataExport;
 
 class Wisata extends Component
 {
     use WithPagination, WithoutUrlPagination;
+    public $excelFile;
 
     public $search = '';
     public $sortDirection = 'asc';
@@ -114,4 +118,20 @@ class Wisata extends Component
         WisataModel::find($id)->delete();
         session()->flash('message', 'Wisata berhasil dihapus.');
     }
+    public function importExcel()
+    {
+        $this->validate([
+            'excelFile' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new WisataImport, $this->excelFile);
+
+        session()->flash('message', 'Data wisata berhasil diimpor!');
+    }
+
+    public function exportWisata()
+    {
+        return Excel::download(new WisataExport, 'data_wisata.xlsx');
+    }
+
 }

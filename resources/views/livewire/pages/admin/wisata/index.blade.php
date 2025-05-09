@@ -1,21 +1,45 @@
 <div class="p-6 bg-white shadow-md rounded-lg w-full min-h-screen flex flex-col flex-grow">
     <h1 class="text-2xl font-bold mb-6 text-gray-700">Data Wisata</h1>
     
-    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
-        <select wire:model.live="sortDirection" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5">
-            <option value="asc">Sort: A-Z</option>
-            <option value="desc">Sort: Z-A</option>
-        </select>
-        <div class="relative w-full sm:w-auto">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <!-- Sort Dropdown -->
+        <div>
+            <select wire:model.live="sortDirection"
+                class="text-sm text-gray-700 bg-white border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                <option value="asc">Sort: A-Z</option>
+                <option value="desc">Sort: Z-A</option>
+            </select>
+        </div>
+    
+        <!-- Search Input -->
+        <div class="relative w-full sm:w-64">
             <input type="text" id="search" wire:model.live="search"
-                class="w-full sm:w-64 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 pl-10 p-2.5"
+                class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg pl-10 pr-3 py-2.5 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Search wisata..." />
-            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-500">
                 🔍
             </div>
         </div>
-
+    
+        <!-- Import Form -->
+        <form wire:submit.prevent="importExcel" enctype="multipart/form-data"
+            class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <input type="file" wire:model="excelFile"
+                class="text-sm text-gray-700 border border-gray-300 rounded-md p-1 bg-white">
+            @error('excelFile')
+                <span class="text-red-500 text-sm">{{ $message }}</span>
+            @enderror
+            <button type="submit"
+                class="bg-green-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
+                📥 Import Excel
+            </button>
+            <button wire:click="exportWisata"
+                class="bg-yellow-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow hover:bg-yellow-600 transition">
+                📤 Export Wisata
+            </button>
+        </form>
     </div>
+    
 
     <a href="{{ route('admin.wisata.create') }}"
         class="inline-flex bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition self-start">
@@ -68,5 +92,4 @@
     </div>
     
 </div>
-{{-- <livewire:pages.admin.wisata.detail/> --}}
 

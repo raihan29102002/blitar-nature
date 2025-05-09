@@ -22,7 +22,7 @@ class DetailWisata extends Component
 
     public function mount($id)
     {
-        $this->wisata = Wisata::with(['media', 'ratings.user'])->findOrFail($id);
+        $this->wisata = Wisata::with(['media', 'ratings.user', 'fasilitas'])->findOrFail($id);
         $this->calculateAverageRating();
     }
 

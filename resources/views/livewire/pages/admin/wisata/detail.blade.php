@@ -3,6 +3,12 @@
         <a href="{{ route('admin.wisata') }}" class="mt-4 inline-block bg-gray-500 text-white px-4 py-2 rounded">
             🔙 Kembali
         </a>
+        <button wire:click="deleteWisata({{ $wisata->id }})" 
+            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            onclick="return confirm('Yakin ingin menghapus?')">
+            🗑️ Hapus
+        </button>
+        
         <h1 class="text-3xl font-bold text-green-700">{{ $wisata->nama }}</h1>
         <p class="text-gray-700">{{ $wisata->deskripsi }}</p>
         <div>
@@ -27,6 +33,19 @@
             <p><strong>Status Pengelola:</strong> {{ $wisata->status_pengelolaan }}</p>
             <p><strong>Kategori:</strong> {{ $wisata->kategori }}</p>
         </div>
+        <div class="bg-white rounded-lg shadow p-4 mt-4">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Fasilitas yang Tersedia</h2>
+            @if($wisata->fasilitas && $wisata->fasilitas->isNotEmpty())
+                <ul class="list-disc pl-5 text-gray-600 space-y-1">
+                    @foreach($wisata->fasilitas as $fasilitas)
+                        <li>{{ $fasilitas->nama_fasilitas }}</li>
+                    @endforeach
+                </ul>
+            @else
+                <p class="text-gray-500 italic">Belum ada fasilitas yang tercatat untuk wisata ini.</p>
+            @endif
+        </div>
+        
     </div>
 
     <div class="space-y-6">

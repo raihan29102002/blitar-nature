@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('wisatas', function (Blueprint $table) {
-            $table->enum('kategori', ['pantai', 'pegunungan', 'air terjun', 'perairan', 'hutan', 'perkemahan', 'lainnya'])
-            ->after('deskripsi')
-            ->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('google_id')->nullable()->unique();
         });
     }
 
@@ -23,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('wisatas', function (Blueprint $table) {
-            $table->dropColumn('kategori');
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 };

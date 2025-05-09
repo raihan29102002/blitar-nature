@@ -50,10 +50,12 @@
                     <div class="flex justify-between items-center text-xs text-gray-500 mt-3">
                         <span>⭐ {{ number_format($wisata->rating ?? 0, 1) }}</span>
                         <span class="jarak-display">
-                            @if (isset($wisata->jarak))
+                            @if (isset($wisata->jarak) && !is_null($wisata->jarak))
                                 {{ number_format($wisata->jarak, 1) }} km
-                            @else
+                            @elseif ($filter === 'lokasi')
                                 <span class="text-gray-400 italic animate-pulse">Menghitung jarak...</span>
+                            @else
+                                <span class="text-gray-400">-</span>
                             @endif
                         </span>
                     </div>
@@ -174,7 +176,22 @@
                     }
                 });
             });
+            // Livewire.on('dom-updated', () => {
+            //     navigator.geolocation.getCurrentPosition(
+            //         (position) => {
+            //             const userLat = position.coords.latitude;
+            //             const userLng = position.coords.longitude;
+            //             hitungJarakSemua(userLat, userLng);
+            //         },
+            //         (error) => {
+            //             console.error("Gagal mendapatkan lokasi saat update DOM:", error);
+            //         },
+            //         { timeout: 15000, maximumAge: 60000 }
+            //     );
+            // });
         }
+        
+
 
 
         await ambilLokasi();

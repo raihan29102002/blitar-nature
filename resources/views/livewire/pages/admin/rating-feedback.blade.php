@@ -6,7 +6,14 @@
             {{ session('message') }}
         </div>
     @endif
-
+    <div class="mb-4">
+        <input 
+            type="text" 
+            wire:model.live="search"
+            placeholder="Cari berdasarkan nama pengguna atau wisata..." 
+            class="w-full md:w-1/3 px-4 py-2 border rounded-lg shadow-sm"
+        >
+    </div>
     <table class="min-w-full table-auto text-sm text-left border-collapse mt-4">
         <thead>
             <tr class="bg-blue-100 text-gray-700 uppercase text-xs">
