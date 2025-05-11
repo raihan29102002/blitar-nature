@@ -4,7 +4,6 @@ namespace App\Livewire\Pages\Wisatawan;
 
 use Livewire\Component;
 use App\Models\Wisata as WisataModel;
-use App\Http\Controllers\GoogleMapsController;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -53,6 +52,27 @@ class Wisata extends Component
     {
         $this->resetPage();
     }
+    private function calculateHaversineDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371; // km
+
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo   = deg2rad($lat2);
+        $lonTo   = deg2rad($lon2);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(
+            pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) *
+            pow(sin($lonDelta / 2), 2)
+        ));
+
+        return round($earthRadius * $angle, 2); // dibulatkan 2 angka di belakang koma
+    }
+
 
     private function loadFilteredWisata(): LengthAwarePaginator
     {
@@ -67,10 +87,15 @@ class Wisata extends Component
         $query->withValidCoordinates();
         $collection = $query->get();
 
-        // Calculate distances using GoogleMapsController
         if ($this->userLat && $this->userLng) {
-            $mapsController = new GoogleMapsController();
-            $collection = $mapsController->calculateDistances($collection, $this->userLat, $this->userLng);
+            $collection->each(function ($wisata) {
+                $wisata->jarak = $this->calculateHaversineDistance(
+                    $this->userLat,
+                    $this->userLng,
+                    $wisata->koordinat_x,
+                    $wisata->koordinat_y
+                );
+            });
         } else {
             $collection->each(function ($wisata) {
                 $wisata->jarak = null;
@@ -96,13 +121,12 @@ class Wisata extends Component
     private function prepareWisataData(Collection $collection): Collection
     {
         return $collection->map(function ($wisata) {
-            return (object) [
-                ...$wisata->toArray(),
-                'resized_image_url' => $this->getResizedImageUrl($wisata->media->first()?->url),
-                'jarak' => $wisata->jarak ?? null,
-                'rating' => $wisata->ratings_avg_rating ?? 0,
-                'total_pengunjung' => $wisata->kunjungans_sum_jumlah ?? 0,
-            ];
+            $wisata->resized_image_url = $this->getResizedImageUrl($wisata->media->first()?->url);
+            $wisata->jarak = $wisata->jarak ?? null;
+            $wisata->rating = $wisata->ratings_avg_rating ?? 0;
+            $wisata->total_pengunjung = $wisata->kunjungans_sum_jumlah ?? 0;
+        
+            return $wisata; // tetap objek model, lebih aman
         });
     }
 

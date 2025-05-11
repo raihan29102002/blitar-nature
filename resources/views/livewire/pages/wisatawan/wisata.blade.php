@@ -98,7 +98,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             const userLat = position.coords.latitude;
             const userLng = position.coords.longitude;
 
-            Livewire.dispatch('userLocationUpdated', { lat: userLat, lng: userLng });
+            Livewire.dispatch('userLocationUpdated', {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            });
 
         } catch (error) {
             console.error("Gagal mendapatkan lokasi:", error);
