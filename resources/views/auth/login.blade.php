@@ -9,7 +9,7 @@
                     Selamat Datang Kembali!
                 </h2>
                 <p class="text-base mt-6 opacity-80 leading-relaxed">
-                    Masuk untuk menjelajahi keindahan alam Kabupaten Blitar secara eksklusif.
+                    Masuk untuk menjelajahi keanekaragaman wisata di Kabupaten Blitar secara eksklusif.
                 </p>
                 <p class="text-sm mt-12 opacity-80">
                     Belum punya akun?

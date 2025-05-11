@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Livewire\WithFileUploads;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class Profil extends Component
 {
@@ -18,6 +20,7 @@ class Profil extends Component
     public $new_password_confirmation;
     public $foto_profil;
     public $alamat;
+    use WithFileUploads;
 
     public function mount()
     {
@@ -50,13 +53,13 @@ class Profil extends Component
 
         // Cek dan upload foto profil baru
         if ($this->foto_profil) {
-            // Hapus foto lama jika ada
-            if ($this->user->foto_profil && Storage::disk('public')->exists($this->user->foto_profil)) {
-                Storage::disk('public')->delete($this->user->foto_profil);
-            }
+            // Upload ke Cloudinary
+            $upload = Cloudinary::uploadApi()->upload($this->foto_profil->getRealPath(), [
+                'folder' => 'foto_profil'
+            ]);
+            
+            $this->user->foto_profil = $upload['secure_url'];
 
-            $path = $this->foto_profil->store('foto_profil', 'public');
-            $this->user->foto_profil = $path;
         }
 
         // Update password jika diisi

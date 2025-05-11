@@ -10,7 +10,7 @@ class Wisata extends Model {
     use HasFactory;
 
     protected $table = 'wisatas';
-    protected $fillable = ['nama', 'deskripsi', 'koordinat_x', 'koordinat_y', 'status_pengelolaan', 'harga_tiket', 'status_tiket'];
+    protected $fillable = ['nama', 'deskripsi', 'koordinat_x', 'koordinat_y', 'kategori','status_pengelolaan', 'harga_tiket', 'status_tiket'];
     protected $casts = [
         'koordinat_x' => 'float',
         'koordinat_y' => 'float',

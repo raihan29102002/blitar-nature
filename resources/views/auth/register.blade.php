@@ -7,7 +7,7 @@
                     Selamat Datang
                 </h2>
                 <p class="text-sm mt-6 text-slate-500 leading-relaxed">
-                    Daftar sekarang menjelajahi keindahan alam Kabupaten Blitar secara eksklusif.
+                    Daftar Sekarang untuk menjelajahi keanekaragaman wisata di Kabupaten Blitar secara eksklusif.
                 </p>
                 <p class="text-sm mt-12 text-slate-500">
                     Sudah punya akun?

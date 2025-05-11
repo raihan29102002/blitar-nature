@@ -23,18 +23,18 @@
         </div>
     </template>
     <div class="absolute inset-0 bg-black opacity-40 z-10"></div>
-    <nav class="sticky top-0 py-6 bg-gray-900/30 backdrop-blur-sm z-30">
-        <div class="container mx-auto px-4">
-            <div class="relative flex items-center justify-between">
-                <a class="inline-block" href="{{ route('home') }}">
-                    {{-- <img class="h-8" src="images/logo-white.svg" alt="Logo Blitar Nature Explore" /> --}}
+    <nav class="sticky top-0 py-0 bg-gray-900/30 backdrop-blur-sm z-30">
+        <div class="container mx-auto px-4 py-3">
+            <div class="relative flex items-center justify-between ms-20">
+                <a class="inline-block" href="{{ route('wisatawan.dashboard') }}">
+                    <img class="h-16 w-auto" src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" alt="Logo Blitar Nature Explore" />
                 </a>
 
                 <!-- Desktop Nav -->
                 <ul class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:flex">
                     <li class="mr-8">
                         <a class="text-white hover:text-lime-500 font-medium text-lg"
-                            href="{{ route('home') }}">Beranda</a>
+                            href="{{ route('wisatawan.dashboard') }}">Beranda</a>
                     </li>
                     <li class="mr-8">
                         <a class="text-white hover:text-lime-500 font-medium text-lg"
@@ -99,20 +99,25 @@
     <div class="relative flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 z-20">
         <div class="container mx-auto px-4">
             <div class="max-w-lg xl:max-w-xl mx-auto text-center bg-gray-900/50 p-6 rounded-xl">
+                <!-- Gambar Logo -->
+                <img src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" 
+                     alt="Logo VisitBlitar" 
+                     class="mx-auto h-28 mb-2" />
+            
                 <h1 class="font-heading text-2xl sm:text-4xl xl:text-5xl tracking-tight text-white mb-6">
-                    Jelajahi Keindahan Alam Blitar
+                    Menjelajah Blitar, Lebih Mudah
                 </h1>
                 <p class="max-w-md xl:max-w-none text-base sm:text-lg text-white opacity-80 mb-8">
-                    Temukan destinasi wisata alam terbaik di Kabupaten Blitar — dari air terjun yang memukau hingga
-                    hutan pinus yang menenangkan, semua dalam satu platform interaktif dan informatif.
+                    Temukan berbagai destinasi wisata terbaik di Kabupaten Blitar — mulai dari wisata sejarah, budaya, hingga alam, semua dalam satu aplikasi terpadu dan informatif.
                 </p>
                 <a class="inline-flex py-3 px-5 text-base sm:text-lg font-medium text-lime-500 border border-lime-500 hover:border-white bg-transparent hover:bg-lime-500 hover:text-white rounded-full transition duration-200"
                     href="{{ route('wisata') }}">
                     Lihat Destinasi
                 </a>
-            </div>
+            </div>            
         </div>
     </div>
+    
 
 
     <!-- Mobile Navigation -->
@@ -122,7 +127,7 @@
         <nav
             class="relative flex flex-col py-7 px-10 w-full h-full bg-gray-900/30 backdrop-blur-sm text-white overflow-y-auto">
             <div class="flex items-center justify-between">
-                <a class="inline-block" href="{{ route('home') }}">
+                <a class="inline-block" href="{{ route('wisatawan.dashboard') }}">
                     {{-- <img class="h-8" src="images/logo.svg" alt="Mobile Logo" /> --}}
                 </a>
                 <div class="flex items-center" x-data="{ open: false }">
@@ -168,7 +173,7 @@
             <div class="pt-20 pb-12 mb-auto">
                 <ul class="flex-col">
                     <li class="mb-6">
-                        <a class="text-white hover:text-lime-400 font-medium" href="{{ route('home') }}">Beranda</a>
+                        <a class="text-white hover:text-lime-400 font-medium" href="{{ route('wisatawan.dashboard') }}">Beranda</a>
                     </li>
                     <li class="mb-6">
                         <a class="text-white hover:text-lime-400 font-medium" href="{{ route('wisata') }}">Wisata</a>

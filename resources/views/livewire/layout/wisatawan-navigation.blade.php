@@ -1,35 +1,46 @@
 <nav x-data="{ open: false }" class="bg-grey shadow">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
-            <div class="flex items-center">
-                <a href="{{ route('wisatawan.dashboard') }}" class="text-xl font-bold text-green-700">
-                    Blitar Nature Explore
+        <div class="flex justify-between items-center h-16 relative">
+            <!-- Login / Akun - Kiri -->
+            <div class="absolute left-0 flex items-center h-full">
+                <a href="{{ route('wisatawan.dashboard') }}">
+                    <img src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" 
+                         alt="Blitar Nature Explore Logo" 
+                         class="h-16 w-auto" />
                 </a>
             </div>
-            <div class="hidden md:flex space-x-6">
-                <a href="{{ route('wisatawan.dashboard') }}"
-                    class="text-gray-700 hover:text-green-700 transition">Beranda</a>
+
+            <!-- Menu Tengah -->
+            <div class="flex-1 flex justify-center items-center space-x-6">
+                <a href="{{ route('wisatawan.dashboard') }}" class="text-gray-700 hover:text-green-700 transition">Beranda</a>
                 <a href="{{ route('wisata') }}" class="text-gray-700 hover:text-green-700 transition">Wisata</a>
                 <a href="{{ route('profil') }}" class="text-gray-700 hover:text-green-700 transition">Profil</a>
             </div>
-            <div class="hidden sm:flex sm:items-center sm:ms-6 relative" x-data="{ open: false }">
-                @auth
-                <x-user-dropdown />
-                @else
-                <a class="inline-flex items-center px-4 py-2 text-sm font-medium text-grey-700 border border-black rounded-full hover:text-green-700"
-                    href="{{ route('login') }}">
-                    <span class="mr-2">Login</span>
-                    <span class="transform group-hover:translate-x-0.5 transition-transform duration-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M4.75 10H15.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round"></path>
-                            <path d="M10 4.75L15.25 10L10 15.25" stroke="currentColor" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                    </span>
-                </a>
-                @endauth
+
+            <!-- Logo - Kanan -->
+            <div class="absolute right-0 flex items-center h-full">
+                <div class="hidden sm:flex sm:items-center relative" x-data="{ open: false }">
+                    @auth
+                    <x-user-dropdown />
+                    @else
+                    <a class="inline-flex items-center px-4 py-2 text-sm font-medium text-grey-700 border border-black rounded-full hover:text-green-700"
+                        href="{{ route('login') }}">
+                        <span class="mr-2">Login</span>
+                        <span class="transform group-hover:translate-x-0.5 transition-transform duration-200">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4.75 10H15.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
+                                <path d="M10 4.75L15.25 10L10 15.25" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </a>
+                    @endauth
+                </div>
+                
             </div>
+
+            <!-- Menu Toggle Mobile -->
             <div class="md:hidden">
                 <button @click="open = !open"
                     class="text-gray-600 hover:text-green-700 focus:outline-none focus:text-green-700">
@@ -42,6 +53,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Menu Mobile -->
     <div x-show="open" class="md:hidden px-4 pb-4">
         <a href="{{ route('wisatawan.dashboard') }}" class="block py-2 text-gray-700 hover:text-green-700">Beranda</a>
         <a href="{{ route('wisata') }}" class="block py-2 text-gray-700 hover:text-green-700">Wisata</a>
@@ -56,8 +69,7 @@
             </div>
             <div class="mt-3 space-y-1">
                 @if(Auth::user()->role === 'admin')
-                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Panel
-                    Admin</a>
+                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Panel Admin</a>
                 @endif
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
                     {{ __('Profile') }}
@@ -74,5 +86,4 @@
         </div>
         @endauth
     </div>
-
 </nav>

@@ -30,7 +30,8 @@ class Detail extends Component
     }
     public function deleteWisata($id)
     {
-        WisataModel::find($id)->delete();
+        Wisata::find($id)->delete();
         session()->flash('message', 'Wisata berhasil dihapus.');
+        return redirect()->route('admin.wisata');
     }
 }

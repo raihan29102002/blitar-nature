@@ -7,7 +7,7 @@
     
         <div class="flex items-center space-x-4">
             @if($user->foto_profil)
-                <img src="{{ asset('storage/' . $user->foto_profil) }}" alt="Foto Profil" class="w-20 h-20 rounded-full object-cover border" />
+            <img src="{{ $user->foto_profil }}" alt="Foto Profil" class="w-20 h-20 rounded-full object-cover border" />
             @else
                 <img src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746705161/Foto_profil_mc0jd1.jpg" alt="Default Foto Profil" class="w-20 h-20 rounded-full object-cover border" />
             @endif

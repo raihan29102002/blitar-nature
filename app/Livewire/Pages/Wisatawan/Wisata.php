@@ -4,10 +4,10 @@ namespace App\Livewire\Pages\Wisatawan;
 
 use Livewire\Component;
 use App\Models\Wisata as WisataModel;
-use App\Models\RatingFeedback;
-use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\GoogleMapsController;
 use Livewire\WithPagination;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class Wisata extends Component
 {
@@ -18,14 +18,13 @@ class Wisata extends Component
     public $filter = 'default';
     public $perPage = 8;
     public $search = '';
-
+    
     protected $listeners = ['userLocationUpdated'];
     protected $updatesQueryString = ['search', 'filter'];
     
-
     public function updatingSearch()
     {
-        $this->resetPage(); // reset ke halaman pertama saat pencarian berubah
+        $this->resetPage();
     }
 
     public function mount()
@@ -42,8 +41,6 @@ class Wisata extends Component
 
     public function userLocationUpdated($lat, $lng)
     {
-        \Log::info('Koordinat yang diterima:', ['lat' => $lat, 'lng' => $lng]);
-
         $this->userLat = $lat;
         $this->userLng = $lng;
 
@@ -51,7 +48,6 @@ class Wisata extends Component
             $this->resetPage();
         }
     }
-
 
     public function updatedFilter()
     {
@@ -69,34 +65,35 @@ class Wisata extends Component
         }
 
         $query->withValidCoordinates();
-
         $collection = $query->get();
 
-        // ✅ Selalu hitung jarak jika user koordinat tersedia
+        // Calculate distances using GoogleMapsController
         if ($this->userLat && $this->userLng) {
-            $collection = $this->hitungJarakBatched($collection);
+            $mapsController = new GoogleMapsController();
+            $collection = $mapsController->calculateDistances($collection, $this->userLat, $this->userLng);
         } else {
-            // Jika lokasi belum tersedia, set jarak ke null
             $collection->each(function ($wisata) {
                 $wisata->jarak = null;
             });
         }
 
-        // 🔁 Urutkan berdasarkan filter
-        if ($this->filter === 'lokasi') {
-            $collection = $collection->sortBy('jarak')->values();
-        } elseif ($this->filter === 'rating') {
-            $collection = $collection->sortByDesc('ratings_avg_rating')->values();
-        } elseif ($this->filter === 'pengunjung') {
-            $collection = $collection->sortByDesc('kunjungans_sum_jumlah')->values();
-        }
+        // Apply sorting based on filter
+        $collection = $this->applySorting($collection);
 
-        return $this->convertToPaginator($this->prepareWisataData($collection));
+        return $this->paginateCollection($this->prepareWisataData($collection));
     }
 
+    private function applySorting(Collection $collection): Collection
+    {
+        return match ($this->filter) {
+            'lokasi' => $collection->sortBy('jarak')->values(),
+            'rating' => $collection->sortByDesc('ratings_avg_rating')->values(),
+            'pengunjung' => $collection->sortByDesc('kunjungans_sum_jumlah')->values(),
+            default => $collection,
+        };
+    }
 
-
-    private function prepareWisataData($collection)
+    private function prepareWisataData(Collection $collection): Collection
     {
         return $collection->map(function ($wisata) {
             return (object) [
@@ -104,12 +101,12 @@ class Wisata extends Component
                 'resized_image_url' => $this->getResizedImageUrl($wisata->media->first()?->url),
                 'jarak' => $wisata->jarak ?? null,
                 'rating' => $wisata->ratings_avg_rating ?? 0,
-                'total_pengunjung' => $wisata->kunjungan_sum_jumlah ?? 0,
+                'total_pengunjung' => $wisata->kunjungans_sum_jumlah ?? 0,
             ];
         });
     }
 
-    private function convertToPaginator($items)
+    private function paginateCollection(Collection $items): LengthAwarePaginator
     {
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentItems = $items->slice(($currentPage - 1) * $this->perPage, $this->perPage)->values();
@@ -123,59 +120,8 @@ class Wisata extends Component
         );
     }
 
-    private function hitungJarakBatched($wisatas)
+    private function getResizedImageUrl(?string $imageUrl): ?string
     {
-        if (!$this->userLat || !$this->userLng) return $wisatas;
-
-        $validWisatas = $wisatas->filter(function($w) {
-            return !is_null($w->koordinat_x) && !is_null($w->koordinat_y);
-        })->values();
-
-        if ($validWisatas->isEmpty()) {
-            \Log::warning('Tidak ada wisata dengan koordinat valid untuk dihitung jarak');
-            return $wisatas;
-        }
-
-        $apiKey = config('services.google_maps.key');
-        $destinations = $validWisatas->map(fn($w) => "{$w->koordinat_x},{$w->koordinat_y}")->implode('|');
-
-        $response = Http::get(
-            "https://maps.googleapis.com/maps/api/distancematrix/json?" .
-            "origins={$this->userLat},{$this->userLng}&" .
-            "destinations={$destinations}&key={$apiKey}"
-        );
-
-        if (!$response->successful()) {
-            \Log::error('Gagal mendapatkan jarak dari API', [
-                'status' => $response->status(),
-                'response' => $response->json()
-            ]);
-            return $wisatas;
-        }
-
-        $data = $response->json();
-        $elements = $data['rows'][0]['elements'] ?? [];
-
-        // Sisipkan hasil jarak ke item wisata
-        foreach ($validWisatas as $index => $wisata) {
-            if (isset($elements[$index]['distance']['value'])) {
-                $wisata->jarak = $elements[$index]['distance']['value'] / 1000; // dalam KM
-            } else {
-                $wisata->jarak = null;
-            }
-        }
-
-        return $wisatas;
-    }
-
-
-
-    private function getResizedImageUrl($imageUrl)
-    {
-        if (!$imageUrl) {
-            return null;
-        }
-
-        return cloudinary_thumb($imageUrl);
+        return $imageUrl ? cloudinary_thumb($imageUrl) : null;
     }
 }

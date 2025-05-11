@@ -15,14 +15,13 @@ use App\Livewire\Pages\Wisatawan\Profil;
 use App\Livewire\Pages\Wisatawan\DetailWisata;
 use App\Livewire\Pages\Wisatawan\Wisata as WisatawanWisata;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\GoogleMapsController;
 
 Route::get('/', UserDashboard::class)
     ->name('wisatawan.dashboard');
 
 Route::get('/wisatawan/wisata', WisatawanWisata::class)
     ->name('wisata');
-Route::get('/wisatawan/home', Home::class)
-    ->name('home');
 Route::get('/wisatawan/profil', Profil::class)
     ->middleware(['auth'])
     ->name('profil');
@@ -61,6 +60,7 @@ Route::view('profile', 'profile')
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle']);
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::get('/proxy-distance', [GoogleMapsController::class, 'hitungJarak']);
 
 require __DIR__.'/auth.php';
 

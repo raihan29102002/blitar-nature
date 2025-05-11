@@ -82,7 +82,7 @@
                     </aside>
                 </div>
 
-                <main class="flex-1 w-full min-h-screen p-10 bg-white shadow-md">
+                <main class="flex-1 w-full min-h-screen p-16 bg-white shadow-md">
                     {{ $slot }}
                 </main>
             </div>

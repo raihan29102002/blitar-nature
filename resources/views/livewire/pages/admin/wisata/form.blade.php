@@ -2,7 +2,7 @@
     <h1 class="text-2xl font-bold mb-4">{{ $wisataId ? 'Edit Wisata' : 'Tambah Wisata' }}</h1>
 
     <div class="bg-white p-6 rounded shadow-md">
-        <form wire:submit.prevent="save">
+        <form wire:submit.prevent="save" enctype="multipart/form-data">
             <label class="block mb-2">Nama Wisata</label>
             <input type="text" wire:model="nama" class="w-full p-2 border rounded mb-4">
 
@@ -15,6 +15,19 @@
             <label class="block mb-2">Koordinat Y</label>
             <input type="text" wire:model="koordinat_y" class="w-full p-2 border rounded mb-4">
 
+            <label class="block mb-2">Kategori</label>
+            <select wire:model="kategori" class="w-full p-2 border rounded mb-4">
+                <option value="">Pilih Kategori</option>
+                <option value="air_terjun">Air Terjun</option>
+                <option value="pegunungan">Pegunungan</option>
+                <option value="pantai">Pantai</option>
+                <option value="perairan">Perairan</option>
+                <option value="hutan">Hutan</option>
+                <option value="perkemahan">Perkemahan</option>
+                <option value="buatan">Buatan</option>
+                <option value="religi">Religi</option>
+                <option value="lainnya">Lainnya</option>
+            </select>
             
             <label class="block mb-2">Status Pengelolaan</label>
             <select wire:model="status_pengelolaan" class="w-full p-2 border rounded mb-4">
