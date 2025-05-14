@@ -30,7 +30,7 @@ class Pengunjung extends Component
 
         session()->flash('message', 'Data berhasil diimpor!');
     }
-    
+
 
     public function mount()
     {
@@ -46,12 +46,17 @@ class Pengunjung extends Component
         $this->editMode = false;
         $this->kunjunganId = null;
     }
+    public function create()
+    {
+        $this->resetFields();
+        $this->editMode = true;
+    }
 
     protected $paginationTheme = 'tailwind';
     public function save()
     {
         $this->validate([
-            'wisata_id' => 'required|exists:wisata,id',
+            'wisata_id' => 'required|exists:wisatas,id',
             'jumlah' => 'required|numeric|min:0',
             'bulan' => 'required|integer|min:1|max:12',
             'tahun' => 'required|integer|min:2000|max:2100',
@@ -106,5 +111,4 @@ class Pengunjung extends Component
     {
         return Excel::download(new KunjunganExport, 'data_kunjungan.xlsx');
     }
-
 }

@@ -18,11 +18,11 @@ class RatingFeedback extends Component
     protected $listeners = ['simpanRespon'];
     public $search = '';
 
-    protected $updatesQueryString = ['search']; // optional: untuk menyimpan search di URL
+    protected $updatesQueryString = ['search']; 
 
     public function updatingSearch()
     {
-        $this->resetPage(); // Reset ke halaman pertama saat input pencarian berubah
+        $this->resetPage();
     }
 
     public function render()
@@ -45,33 +45,28 @@ class RatingFeedback extends Component
     public function respon($id)
     {
         $this->selectedReviewId = $id;
-        $this->responText = '';  // Reset input teks setiap kali klik tombol respon
-        $this->editMode = true;   // Tampilkan modal respon
+        $this->responText = '';
+        $this->editMode = true;
     }
 
     public function simpanRespon()
     {
-        // Validasi input respon admin
         $this->validate([
             'responText' => 'required|string|max:1000',
         ]);
 
-        // Cari review berdasarkan ID
         $review = RatingFeedbackModel::find($this->selectedReviewId);
         
-        // Simpan respon admin
-        $review->respon_admin = $this->responText;
+        $review->response_admin = $this->responText;
         $review->save();
 
-        // Tampilkan pesan sukses
         session()->flash('message', 'Respon berhasil disimpan.');
 
-        // Tutup modal setelah respon disimpan
         $this->editMode = false;
     }
 
     public function closeModal()
     {
-        $this->editMode = false; // Tutup modal tanpa simpan
+        $this->editMode = false;
     }
 }

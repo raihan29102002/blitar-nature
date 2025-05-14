@@ -27,21 +27,19 @@
         <div class="bg-white rounded-lg shadow p-4 mt-4">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Fasilitas yang Tersedia</h2>
             @if($wisata->fasilitas && $wisata->fasilitas->isNotEmpty())
-                <ul class="list-disc pl-5 text-gray-600 space-y-1">
-                    @foreach($wisata->fasilitas as $fasilitas)
-                        <li>{{ $fasilitas->nama_fasilitas }}</li>
-                    @endforeach
-                </ul>
+            <ul class="list-disc pl-5 text-gray-600 space-y-1">
+                @foreach($wisata->fasilitas as $fasilitas)
+                <li>{{ $fasilitas->nama_fasilitas }}</li>
+                @endforeach
+            </ul>
             @else
-                <p class="text-gray-500 italic">Belum ada fasilitas yang tercatat untuk wisata ini.</p>
+            <p class="text-gray-500 italic">Belum ada fasilitas yang tercatat untuk wisata ini.</p>
             @endif
         </div>
     </div>
 
 
-    <!-- Sidebar: Maps dan Form Feedback -->
     <div class="space-y-6">
-        <!-- Map -->
         <div class="bg-white rounded-lg shadow p-4 mt-4 flex items-start space-x-4 text-sm text-gray-600">
             <div class="bg-white w-full h-64 rounded-lg mb-4 overflow-hidden shadow border" id="map"></div>
         </div>
@@ -49,25 +47,42 @@
         <div class="mt-4 space-y-2">
             <a href="https://www.google.com/maps/dir/?api=1&destination={{ $wisata->koordinat_x }},{{ $wisata->koordinat_y }}"
                 target="_blank"
-                class="block text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
-                📍 Open Direction
+                class="inline-flex items-center justify-center w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                <!-- Heroicon: Map Pin -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z" />
+                </svg>
+                Open Direction
             </a>
+
             <div id="alamat"
                 class="bg-white rounded-lg shadow p-4 mt-4 flex items-start space-x-4 text-sm text-gray-600">
-                <!-- Ikon lokasi -->
-                <div class="flex-shrink-0">
-                    <div class="p-2 rounded-full bg-cyan-500 text-white">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                </div>
-
-                <!-- Info alamat dan koordinat -->
                 <div class="flex-1">
-                    <h6 class="font-semibold text-gray-800 mb-1">Alamat</h6>
+                    <h6 class="font-semibold text-gray-800 mb-1 flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-cyan-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 11c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z" />
+                        </svg>
+                        Alamat
+                    </h6>
                     <p id="alamat-text" class="italic mb-1">Mohon tunggu sebentarr</p>
-
                     <div class="mt-2">
-                        <p><strong>Koordinat:</strong>
+                        <p class="flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 11c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z" />
+                            </svg>
+                            <strong>Koordinat:</strong>
                             <span id="koordinat-text">{{ $wisata->koordinat_x }}, {{ $wisata->koordinat_y }}</span>
                         </p>
                         <div class="flex space-x-2 mt-1">
@@ -81,9 +96,9 @@
             </div>
 
 
+
         </div>
 
-        <!-- Rata-rata Rating -->
         <div class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Rating Rata-rata</h2>
             <div class="text-3xl font-bold text-yellow-500">
@@ -91,10 +106,8 @@
             </div>
         </div>
 
-        <!-- Form Rating -->
         @auth
         @if(auth()->user()->role !== 'admin')
-        <!-- Form Rating -->
         <div class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Beri Feedback</h2>
             <form wire:submit.prevent="submitRating" class="space-y-4">
@@ -108,29 +121,24 @@
                 }" class="space-y-1">
                     <label class="block text-sm font-medium text-gray-600">Rating</label>
                     <div class="flex space-x-1">
-                        @for($i = 1; $i <= 5; $i++)
-                            <svg 
-                                @click="setRating({{ $i }})" 
-                                @mouseover="hoverRating = {{ $i }}" 
-                                @mouseleave="hoverRating = 0"
-                                :class="{
+                        @for($i = 1; $i <= 5; $i++) <svg @click="setRating({{ $i }})"
+                            @mouseover="hoverRating = {{ $i }}" @mouseleave="hoverRating = 0" :class="{
                                     'text-yellow-400': {{ $i }} <= (hoverRating || rating),
                                     'text-gray-300': {{ $i }} > (hoverRating || rating)
-                                }" 
-                                class="w-8 h-8 cursor-pointer transition-colors" 
-                                fill="currentColor" 
-                                viewBox="0 0 20 20"
-                            >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 00.95.69h4.163c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.955c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.176 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.955a1 1 0 00-.364-1.118L2.07 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.955z"/>
+                                }" class="w-8 h-8 cursor-pointer transition-colors" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path
+                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 00.95.69h4.163c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.955c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.176 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.955a1 1 0 00-.364-1.118L2.07 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.955z" />
                             </svg>
-                        @endfor
+                            @endfor
                     </div>
                     @error('rating') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
-        
+
                 <div>
                     <label for="feedback" class="block text-sm font-medium text-gray-600">Komentar</label>
-                    <textarea wire:model.defer="feedback" id="feedback" class="w-full border rounded px-3 py-2" rows="3"></textarea>
+                    <textarea wire:model.defer="feedback" id="feedback" class="w-full border rounded px-3 py-2"
+                        rows="3"></textarea>
                     @error('feedback') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
                 <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
@@ -140,7 +148,6 @@
         </div>
         @endif
         @else
-        <!-- Jika belum login -->
         <div class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Beri Feedback</h2>
             @if (session()->has('success'))
@@ -155,7 +162,6 @@
             </div>
             @endif
             <form onsubmit="return showLoginAlert(event)" class="space-y-4">
-                <!-- form disabled -->
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Rating</label>
                     <div class="flex space-x-1 opacity-50 pointer-events-none">
@@ -182,7 +188,7 @@
     @if($wisata->ratings && $wisata->ratings->isNotEmpty())
     <div class="bg-white rounded-lg shadow p-4 space-y-4">
         <h2 class="text-lg font-semibold text-gray-700 mb-2">Ulasan Pengunjung</h2>
-        @foreach($wisata->ratings->sortByDesc('created_at') as $fb)
+        @foreach($feedbacks as $fb)
         <div class="border-t pt-2">
             <div class="text-sm text-gray-700 font-semibold mb-1">
                 {{ $fb->user->name ?? 'Anonim' }}
@@ -216,6 +222,9 @@
 
         </div>
         @endforeach
+        <div class="mt-4">
+            {{ $feedbacks->links() }}
+        </div>
     </div>
     @else
     <div class="bg-white rounded-lg shadow p-4">
@@ -223,8 +232,6 @@
         <p class="text-sm text-gray-500">Belum ada ulasan.</p>
     </div>
     @endif
-
-    <!-- Script Map -->
     <script>
         let map;
         let marker;
@@ -248,7 +255,6 @@
                     title: '{{ $wisata->nama }}'
                 });
     
-                // Geocoding
                 const geocoder = new google.maps.Geocoder();
                 geocoder.geocode({ location: latLng }, (results, status) => {
                     if (status === "OK" && results[0]) {
@@ -263,17 +269,13 @@
             }
         }
     
-        // Pastikan initMap tersedia secara global
         window.initMap = initMap;
     
-        // Handle Livewire events
         document.addEventListener("DOMContentLoaded", () => {
-            // Load map when Livewire is ready
             if (typeof google !== 'undefined') {
                 initMap();
             }
     
-            // Refresh map when rating is submitted
             Livewire.on('rating-submitted', () => {
                 if (typeof google !== 'undefined' && typeof initMap === 'function') {
                     initMap();
@@ -281,8 +283,7 @@
             });
         });
     </script>
-    
-    <!-- Load Google Maps API -->
+
     <script>
         function loadGoogleMaps() {
             const script = document.createElement('script');
@@ -295,7 +296,6 @@
             document.head.appendChild(script);
         }
     
-        // Load Google Maps when Livewire is initialized
         document.addEventListener('livewire:init', () => {
             loadGoogleMaps();
         });

@@ -4,9 +4,7 @@ namespace App\Livewire\Pages\Wisatawan;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
@@ -36,7 +34,7 @@ class Profil extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->user->id,
             'alamat' => 'nullable|string|max:255',
-            'foto_profil' => 'nullable|image|max:1024', // max 1MB
+            'foto_profil' => 'nullable|image|max:1024',
         ];
 
         if ($this->current_password || $this->new_password || $this->new_password_confirmation) {
@@ -46,14 +44,11 @@ class Profil extends Component
 
         $validated = $this->validate($rules);
 
-        // Update data dasar
         $this->user->name = $this->name;
         $this->user->email = $this->email;
         $this->user->alamat = $this->alamat;
 
-        // Cek dan upload foto profil baru
         if ($this->foto_profil) {
-            // Upload ke Cloudinary
             $upload = Cloudinary::uploadApi()->upload($this->foto_profil->getRealPath(), [
                 'folder' => 'foto_profil'
             ]);
@@ -62,7 +57,6 @@ class Profil extends Component
 
         }
 
-        // Update password jika diisi
         if ($this->current_password && $this->new_password) {
             if (!Hash::check($this->current_password, $this->user->password)) {
                 $this->addError('current_password', 'Password lama tidak sesuai.');
@@ -71,7 +65,6 @@ class Profil extends Component
 
             $this->user->password = bcrypt($this->new_password);
 
-            // Reset field password
             $this->current_password = $this->new_password = $this->new_password_confirmation = null;
         }
 

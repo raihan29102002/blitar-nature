@@ -74,7 +74,7 @@
         
         <!-- Pagination -->
         <div class="w-full px-4">
-            {{ $wisatas->links() }}
+            {{ $wisatas->links('pagination::tailwind') }}
         </div>
     </div>
 </div>

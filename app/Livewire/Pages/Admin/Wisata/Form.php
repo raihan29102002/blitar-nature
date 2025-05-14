@@ -12,30 +12,32 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class Form extends Component
 {
     use WithFileUploads;
-    
+
     public $wisataId, $nama, $deskripsi, $koordinat_x, $koordinat_y, $harga_tiket, $status_pengelolaan, $status_tiket;
     public $kategori;
     public $selectedFasilitas = [];
-    public $mediaFiles = []; // Perbaikan nama variabel
+    public $mediaFiles = [];
     protected $middleware = ['auth', 'role:admin'];
-    
+
     public $showHargaTiket = false;
+    public $mediaLama = [];
+    public $uploadError;
 
     public function checkTiketStatus()
     {
         if ($this->status_tiket === 'berbayar') {
             $this->showHargaTiket = true;
-            $this->harga_tiket = null; // Biarkan user isi manual
+            $this->harga_tiket = null;
         } else {
             $this->showHargaTiket = false;
-            $this->harga_tiket = 0; // Langsung set harga ke 0 jika gratis
+            $this->harga_tiket = 0;
         }
     }
 
     public function mount($id = null)
     {
         if ($id) {
-            $wisata = Wisata::findOrFail($id);
+            $wisata = Wisata::with('media')->findOrFail($id);
             $this->wisataId = $wisata->id;
             $this->nama = $wisata->nama;
             $this->deskripsi = $wisata->deskripsi;
@@ -46,6 +48,14 @@ class Form extends Component
             $this->status_pengelolaan = $wisata->status_pengelolaan;
             $this->status_tiket = $wisata->status_tiket;
             $this->selectedFasilitas = $wisata->fasilitas->pluck('id')->toArray();
+            $this->checkTiketStatus();
+            $this->harga_tiket = $wisata->harga_tiket;
+            $this->mediaLama = $wisata->media->map(function ($media) {
+                return [
+                    'url' => $media->url,
+                    'type' => $media->type,
+                ];
+            })->toArray();
         }
     }
 
@@ -54,8 +64,8 @@ class Form extends Component
         $this->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
-            'koordinat_x' => 'required|string',
-            'koordinat_y' => 'required|string',
+            'koordinat_x' => 'required|numeric',
+            'koordinat_y' => 'required|numeric',
             'kategori' => 'required|string|max:100',
             'harga_tiket' => $this->status_tiket === 'berbayar' ? 'required|numeric|min:1' : 'nullable|numeric',
             'status_pengelolaan' => 'required',
@@ -84,7 +94,7 @@ class Form extends Component
 
                 $extension = strtolower($file->getClientOriginalExtension());
                 $type = in_array($extension, ['jpg', 'png', 'jpeg', 'webp']) ? 'foto' : 'video';
-                
+
                 try {
                     $upload = Cloudinary::uploadApi()->upload($file->getRealPath(), [
                         'folder' => 'media_wisata',
@@ -97,15 +107,12 @@ class Form extends Component
                         'url' => $upload['secure_url'],
                         'type' => $type
                     ]);
-                    
                 } catch (\Exception $e) {
-                    // Log error atau beri feedback ke user
-                    \Log::error('Cloudinary upload error: '.$e->getMessage());
                     continue;
                 }
             }
         }
-        
+
         return redirect()->route('admin.wisata')->with('message', 'Data berhasil disimpan!');
     }
     protected $layout = 'layouts.admin';
@@ -115,6 +122,6 @@ class Form extends Component
         return view('livewire.pages.admin.wisata.form', [
             'allFasilitas' => Fasilitas::all(),
         ])
-        ->layout('layouts.admin');
+            ->layout('layouts.admin');
     }
 }

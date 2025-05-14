@@ -10,7 +10,6 @@ use App\Livewire\Pages\Admin\Pengunjung as PengunjungWisata;
 use App\Livewire\Pages\Admin\RatingFeedback as Rating;
 use App\Livewire\Pages\Admin\Akun as Akun;
 use App\Livewire\Pages\Wisatawan\Dashboard as UserDashboard;
-use App\Livewire\Pages\Wisatawan\Home;
 use App\Livewire\Pages\Wisatawan\Profil;
 use App\Livewire\Pages\Wisatawan\DetailWisata;
 use App\Livewire\Pages\Wisatawan\Wisata as WisatawanWisata;

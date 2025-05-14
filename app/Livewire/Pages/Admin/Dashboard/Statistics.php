@@ -4,8 +4,6 @@ namespace App\Livewire\Pages\Admin\Dashboard;
 
 use Livewire\Component;
 use App\Models\Wisata;
-// use App\Models\RatingFeedback;
-// use Illuminate\Support\Facades\DB;
 
 class Statistics extends Component
 {

@@ -4,16 +4,19 @@ namespace App\Livewire\Pages\Wisatawan;
 
 use Livewire\Component;
 use App\Models\Wisata;
-use App\Models\Media;
 use App\Models\RatingFeedback;
+use Livewire\WithPagination;
 
 class DetailWisata extends Component
 {
+    use WithPagination;
     public $wisata;
-    public $rating = 0; // Inisialisasi dengan 0
+    public $rating = 0;
     public $feedback;
     public $averageRating;
     public $response_admin = [];
+    protected $paginationTheme = 'tailwind';
+    protected $queryString = ['page'];
 
     protected $rules = [
         'rating' => 'required|integer|min:1|max:5',
@@ -35,7 +38,6 @@ class DetailWisata extends Component
     {
         $this->validate();
 
-        // Cek apakah user sudah memberikan rating sebelumnya
         $existingRating = RatingFeedback::where('user_id', auth()->id())
             ->where('wisata_id', $this->wisata->id)
             ->first();
@@ -53,15 +55,12 @@ class DetailWisata extends Component
                 'feedback' => $this->feedback,
             ]);
 
-            // Refresh data wisata dengan ratings terbaru
             $this->wisata->refresh();
             $this->calculateAverageRating();
 
-            // Reset form
             $this->reset(['rating', 'feedback']);
             $this->resetErrorBag();
 
-            // Emit event untuk refresh komponen
             $this->dispatch('rating-submitted');
 
             session()->flash('success', 'Terima kasih atas feedback Anda!');
@@ -90,7 +89,12 @@ class DetailWisata extends Component
 
     public function render()
     {
-        return view('livewire.pages.wisatawan.detail-wisata')
-            ->layout('layouts.wisatawan');
+        $feedbacks = RatingFeedback::with('user')
+        ->where('wisata_id', $this->wisata->id)
+        ->latest()
+        ->paginate(5);
+        return view('livewire.pages.wisatawan.detail-wisata', [
+            'feedbacks' => $feedbacks
+        ])->layout('layouts.wisatawan');
     }
 }

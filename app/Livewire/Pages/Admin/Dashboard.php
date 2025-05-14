@@ -9,7 +9,7 @@ class Dashboard extends Component
 {
     public function logout()
     {
-        (new Logout())(); // Memanggil Logout seperti function
+        (new Logout())();
 
         return redirect('/');
     }

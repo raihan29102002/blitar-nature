@@ -20,7 +20,7 @@ class Akun extends Component
         'name' => 'required|string|max:255',
         'email' => 'required|email',
         'role' => 'required|in:admin,wisatawan',
-        'password' => 'nullable|min:6', // hanya saat buat akun atau ubah password
+        'password' => 'nullable|min:6',
     ];
 
     public function render()
@@ -59,7 +59,6 @@ class Akun extends Component
         $this->validate();
 
         if ($this->userId) {
-            // Update akun
             $user = User::findOrFail($this->userId);
             $user->name = $this->name;
             $user->email = $this->email;
@@ -70,7 +69,6 @@ class Akun extends Component
             $user->save();
             session()->flash('message', 'Akun berhasil diperbarui.');
         } else {
-            // Tambah akun
             User::create([
                 'name' => $this->name,
                 'email' => $this->email,

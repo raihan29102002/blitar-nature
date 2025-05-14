@@ -1,6 +1,5 @@
 <x-guest-layout>
     <div class="min-h-screen flex items-center justify-center bg-teal-900 relative overflow-hidden">
-        <!-- Overlay hitam transparan -->
         <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
 
         <div class="relative z-10 w-full max-w-6xl grid md:grid-cols-2 gap-10 p-6 text-white">

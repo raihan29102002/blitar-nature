@@ -8,7 +8,6 @@
 
         <title>{{ config('app.name', 'Blitar Nature Explore') }}</title>
 
-        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         @vite(['node_modules/@flaticon/flaticon-uicons/css/all/all.css'])
@@ -17,14 +16,12 @@
 
         @livewireStyles
 
-        <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 w-full">
             <livewire:layout.admin />
             <div class="flex min-h-screen bg-gray-100">
-                <!-- Sidebar -->
                 <div x-data="{ open: true }" class="flex flex-col w-64 bg-white border-r dark:bg-gray-800 dark:border-gray-700" :class="{ 'w-64': open, 'w-20': !open }">
                     <button @click="open = !open" class="p-4 focus:outline-none">
                         <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

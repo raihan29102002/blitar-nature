@@ -54,7 +54,7 @@ class Wisata extends Component
     }
     private function calculateHaversineDistance($lat1, $lon1, $lat2, $lon2)
     {
-        $earthRadius = 6371; // km
+        $earthRadius = 6371;
 
         $latFrom = deg2rad($lat1);
         $lonFrom = deg2rad($lon1);
@@ -70,7 +70,7 @@ class Wisata extends Component
             pow(sin($lonDelta / 2), 2)
         ));
 
-        return round($earthRadius * $angle, 2); // dibulatkan 2 angka di belakang koma
+        return round($earthRadius * $angle, 2); 
     }
 
 
@@ -102,7 +102,6 @@ class Wisata extends Component
             });
         }
 
-        // Apply sorting based on filter
         $collection = $this->applySorting($collection);
 
         return $this->paginateCollection($this->prepareWisataData($collection));
@@ -126,7 +125,7 @@ class Wisata extends Component
             $wisata->rating = $wisata->ratings_avg_rating ?? 0;
             $wisata->total_pengunjung = $wisata->kunjungans_sum_jumlah ?? 0;
         
-            return $wisata; // tetap objek model, lebih aman
+            return $wisata; 
         });
     }
 
