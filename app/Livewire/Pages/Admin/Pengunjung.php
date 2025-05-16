@@ -10,11 +10,12 @@ use Livewire\WithoutUrlPagination;
 use App\Imports\KunjunganImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\KunjunganExport;
+use Livewire\WithFileUploads;
 
 
 class Pengunjung extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination, WithoutUrlPagination, WithFileUploads;
     protected $middleware = ['auth', 'role:admin'];
     public $wisata_id, $jumlah, $bulan, $tahun;
     public $kunjunganId;

@@ -1,5 +1,5 @@
 <div class="p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md">
-    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Top 5 Wisata Berdasarkan Rating</h2>
+    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Top 3 Wisata Berdasarkan Rating</h2>
   
     <div class="space-y-3">
       @foreach($topWisata as $wisata)

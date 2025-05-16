@@ -52,6 +52,12 @@
         </form>
     </div>
 
+    @if (session()->has('message'))
+    <div class="bg-green-100 text-green-800 p-2 mt-4 rounded">
+        {{ session('message') }}
+    </div>
+    @endif
+
     <!-- Tambah Wisata Button -->
     <a href="{{ route('admin.wisata.create') }}"
         class="inline-flex bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition self-start items-center">

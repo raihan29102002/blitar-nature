@@ -15,6 +15,7 @@ use App\Livewire\Pages\Wisatawan\DetailWisata;
 use App\Livewire\Pages\Wisatawan\Wisata as WisatawanWisata;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\GoogleMapsController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', UserDashboard::class)
     ->name('wisatawan.dashboard');
@@ -32,6 +33,9 @@ Route::get('/wisatawan/profil', Profil::class)
 Route::get('/admin/dashboard', AdminDashboard::class)
     ->middleware(['auth', 'role:admin'])
     ->name('admin.dashboard');
+
+Route::post('/admin/export-dashboard', [LaporanController::class, 'generateDashboardPdf'])->name('admin.export.pdf');
+
     
     Route::prefix('admin/wisata')->middleware(['auth', 'role:admin'])->group(function () {
         Route::get('/', DataWisata::class)->name('admin.wisata');

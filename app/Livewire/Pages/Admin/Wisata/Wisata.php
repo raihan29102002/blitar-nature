@@ -9,10 +9,12 @@ use App\Models\Wisata as WisataModel;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\WisataImport;
 use App\Exports\WisataExport;
+use Livewire\WithFileUploads;
 
 class Wisata extends Component
 {
     use WithPagination, WithoutUrlPagination;
+    use WithFileUploads;
     public $excelFile;
 
     public $search = '';
