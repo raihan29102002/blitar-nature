@@ -5,25 +5,30 @@ namespace App\Livewire\Pages\Wisatawan;
 use Livewire\Component;
 use App\Models\Wisata;
 use App\Models\RatingFeedback;
+use App\Models\ReviewImage;
 use Livewire\WithPagination;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
+use Livewire\WithFileUploads;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 
 class DetailWisata extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
     public $wisata;
     public $rating = 0;
     public $feedback;
     public $averageRating;
     public $response_admin = [];
+    public $images = [];
     protected $paginationTheme = 'tailwind';
     protected $queryString = ['page'];
 
     protected $rules = [
         'rating' => 'required|integer|min:1|max:5',
         'feedback' => 'nullable|string|max:1000',
+        'images.*' => 'nullable|image|max:2048',
     ];
 
     public function mount($id)
@@ -31,7 +36,6 @@ class DetailWisata extends Component
         $this->wisata = Wisata::with(['media', 'ratings.user', 'fasilitas'])->findOrFail($id);
         $this->calculateAverageRating();
 
-        // Panggil scraping saat halaman dimuat
         $this->getGoogleReviews();
     }
 
@@ -108,17 +112,43 @@ class DetailWisata extends Component
         }
 
         try {
-            RatingFeedback::create([
+            $rating = RatingFeedback::create([
                 'user_id' => auth()->id(),
                 'wisata_id' => $this->wisata->id,
                 'rating' => $this->rating,
                 'feedback' => $this->feedback,
             ]);
 
+            // Upload ke Cloudinary
+            if ($this->images) {
+                foreach ($this->images as $image) {
+                    if (!$image || !$image->getRealPath()) continue;
+
+                    $extension = strtolower($image->getClientOriginalExtension());
+                    $type = in_array($extension, ['jpg', 'png', 'jpeg', 'webp']) ? 'foto' : 'video';
+
+                    try {
+                        $upload = Cloudinary::uploadApi()->upload($image->getRealPath(), [
+                            'folder' => 'review_images',
+                            'resource_type' => 'auto',
+                            'quality' => 'auto:good',
+                        ]);
+
+                        ReviewImage::create([
+                            'rating_feedback_id' => $rating->id,
+                            'image_path' => $upload['secure_url'], // simpan URL cloudinary
+                        ]);
+                    } catch (\Exception $e) {
+                        // log error kalau mau
+                        continue;
+                    }
+                }
+            }
+
             $this->wisata->refresh();
             $this->calculateAverageRating();
 
-            $this->reset(['rating', 'feedback']);
+            $this->reset(['rating', 'feedback', 'images']);
             $this->resetErrorBag();
 
             $this->dispatch('rating-submitted');
@@ -149,7 +179,7 @@ class DetailWisata extends Component
 
     public function render()
     {
-        $feedbacks = RatingFeedback::with('user')
+        $feedbacks = RatingFeedback::with('user', 'images')
             ->where('wisata_id', $this->wisata->id)
             ->latest()
             ->paginate(5);

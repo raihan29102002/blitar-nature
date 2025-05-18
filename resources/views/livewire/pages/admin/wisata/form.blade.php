@@ -50,6 +50,14 @@
             <input type="number" wire:model="harga_tiket" placeholder="Contoh: 5000"
                 class="w-full p-2 border rounded mb-4">
             @endif
+            <div class="mb-4">
+                <label for="link_informasi" class="block text-sm font-medium text-gray-700">Link Informasi
+                    Tambahan</label>
+                <input type="url" id="link_informasi" wire:model="link_informasi"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-blue-200">
+                <small class="text-gray-500">Contoh: https://instagram.com/namawisata atau
+                    https://namawisata.com</small>
+            </div>
 
             <label class="block mb-2">Fasilitas</label>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">

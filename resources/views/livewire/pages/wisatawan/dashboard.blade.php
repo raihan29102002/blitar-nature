@@ -1,186 +1,101 @@
-<section class="relative bg-teal-900 overflow-hidden min-h-screen" x-data="{
-            mobileNavOpen: false,
-            currentIndex: 0,
-            images: [
-                '/storage/img/monte.jpg',
-                '/storage/img/pantai.jpg',
-                '/storage/img/teh.jpg',
-                '/storage/img/gunung.jpg',
-                '/storage/img/terjun.jpg'
-            ],
-            init() {
-                setInterval(() => {
-                    this.currentIndex = (this.currentIndex + 1) % this.images.length;
-                }, 10000);
-            }
-         }" x-init="init()">
-    <template x-for="(image, index) in images" :key="index">
-        <div x-show="currentIndex === index" x-transition:enter="transition-opacity duration-1000"
-            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-            x-transition:leave="transition-opacity duration-1000" x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0" class="absolute top-0 left-0 w-full h-full bg-cover bg-center z-0"
-            :style="`background-image: url(${image});`">
+<section class="relative bg-white overflow-hidden">
+    <div class="relative h-screen w-full" x-data="{ currentIndex: 0, images: [
+        '/storage/img/monte.jpg', '/storage/img/pantai.jpg', '/storage/img/teh.jpg', '/storage/img/gunung.jpg', '/storage/img/terjun.jpg'
+    ], init() {
+        setInterval(() => { this.currentIndex = (this.currentIndex + 1) % this.images.length }, 7000);
+    } }" x-init="init()">
+        <div class="absolute w-full z-50">
+            @include('partials.navbar-wisatawan')
         </div>
-    </template>
-    <div class="absolute inset-0 bg-black opacity-40 z-10"></div>
-    <nav class="sticky top-0 py-0 bg-gray-900/30 backdrop-blur-sm z-30">
-        <div class="container mx-auto px-4 py-3">
-            <div class="relative flex items-center justify-between ms-20">
-                <a class="inline-block" href="{{ route('wisatawan.dashboard') }}">
-                    <img class="h-16 w-auto" src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" alt="Logo Blitar Nature Explore" />
-                </a>
-
-                <!-- Desktop Nav -->
-                <ul class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden md:flex">
-                    <li class="mr-8">
-                        <a class="text-white hover:text-lime-500 font-medium text-lg"
-                            href="{{ route('wisatawan.dashboard') }}">Beranda</a>
-                    </li>
-                    <li class="mr-8">
-                        <a class="text-white hover:text-lime-500 font-medium text-lg"
-                            href="{{ route('wisata') }}">Wisata</a>
-                    </li>
-                </ul>
-
-                <!-- Login Button & Hamburger -->
-                <div class="flex items-center justify-end">
-                    <div class="hidden md:block relative" x-data="{ open: false }">
-                        @auth
-                        <button @click="open = !open"
-                            class="inline-flex items-center px-4 py-2 text-sm font-medium text-white border border-white rounded-full hover:text-lime-400">
-                            {{ Auth::user()->name }}
-                            <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414 5.293 8.707a1 1 0 010-1.414z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                        <div x-show="open" @click.outside="open = false"
-                            class="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg z-50">
-                            @if(Auth::user()->role === 'admin')
-                            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Panel
-                                Admin</a>
-                            @endif
-                            <a href="{{ route('profil') }}" class="block px-4 py-2 hover:bg-gray-100">Profil</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit"
-                                    class="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-                            </form>
-                        </div>
-                        @else
-                        <a class="group inline-flex py-2.5 px-4 text-sm font-medium text-white hover:text-lime-400 border border-white hover:bg-white rounded-full transition duration-200"
-                            href="{{ route('login') }}">
-                            <span class="mr-2">Login</span>
-                            <span class="transform group-hover:translate-x-0.5 transition-transform duration-200">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                    <path d="M4.75 10H15.25" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M10 4.75L15.25 10L10 15.25" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </span>
-                        </a>
-                        @endauth
-                    </div>
-                    <button class="md:hidden text-white hover:text-lime-500"
-                        x-on:click="mobileNavOpen = !mobileNavOpen">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M5.2 23.2H26.8M5.2 16H26.8M5.2 8.8H26.8" stroke="currentColor" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                </div>
+        <template x-for="(image, index) in images" :key="index">
+            <div x-show="currentIndex === index" x-transition:enter="transition-opacity duration-1000"
+                x-transition:leave="transition-opacity duration-1000" class="absolute inset-0 bg-cover bg-center"
+                :style="`background-image: url(${image});`">
             </div>
-        </div>
-    </nav>
+        </template>
 
-    <!-- Hero Section -->
-    <div class="relative flex items-center justify-center min-h-[calc(100vh-4rem)] px-4 z-20">
-        <div class="container mx-auto px-4">
-            <div class="max-w-lg xl:max-w-xl mx-auto text-center bg-gray-900/50 p-6 rounded-xl">
-                <!-- Gambar Logo -->
-                <img src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" 
-                     alt="Logo VisitBlitar" 
-                     class="mx-auto h-28 mb-2" />
-            
-                <h1 class="font-heading text-2xl sm:text-4xl xl:text-5xl tracking-tight text-white mb-6">
-                    Menjelajah Blitar, Lebih Mudah
-                </h1>
-                <p class="max-w-md xl:max-w-none text-base sm:text-lg text-white opacity-80 mb-8">
-                    Temukan berbagai destinasi wisata terbaik di Kabupaten Blitar — mulai dari wisata sejarah, budaya, hingga alam, semua dalam satu aplikasi terpadu dan informatif.
-                </p>
-                <a class="inline-flex py-3 px-5 text-base sm:text-lg font-medium text-lime-500 border border-lime-500 hover:border-white bg-transparent hover:bg-lime-500 hover:text-white rounded-full transition duration-200"
-                    href="{{ route('wisata') }}">
-                    Lihat Destinasi
-                </a>
-            </div>            
+        <div class="absolute inset-0 bg-black/50 z-10"></div>
+
+
+
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-30">
+            <img src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" class="h-28 mb-4"
+                alt="Visit Blitar Logo">
+            <h1 class="text-white text-3xl sm:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
+                Menjelajah Blitar, Lebih Mudah
+            </h1>
+            <p class="text-white text-lg max-w-2xl mb-6 drop-shadow-md">
+                Temukan berbagai destinasi wisata terbaik di Kabupaten Blitar — mulai dari wisata sejarah, budaya,
+                hingga alam.
+            </p>
+            <a href="{{ route('wisata') }}"
+                class="inline-block bg-lime-500 text-white font-semibold px-6 py-3 rounded-full hover:bg-lime-600 transition">
+                Lihat Destinasi
+            </a>
         </div>
     </div>
-    
+    <section class="bg-white py-16">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Tentang Kabupaten Blitar</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto text-lg mb-8">
+                Kabupaten Blitar dikenal sebagai tempat peristirahatan terakhir Bung Karno, dengan kekayaan sejarah,
+                budaya, dan keindahan alam yang menawan. Jelajahi pesonanya dari pantai hingga pegunungan sejuk.
+            </p>
 
+            {{-- Video Profil --}}
+            <div class="max-w-4xl mx-auto aspect-video">
+                <iframe class="w-full h-full rounded-xl shadow-lg" src="https://www.youtube.com/embed/opAdrIUhO3w"
+                    title="Video Profil Kabupaten Blitar" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </section>
 
-    <!-- Mobile Navigation -->
-    <div class="fixed top-0 left-0 bottom-0 w-full xs:w-5/6 xs:max-w-md z-50"
-        :class="{'block': mobileNavOpen, 'hidden': !mobileNavOpen}">
-        <div class="fixed inset-0 bg-teal-900 opacity-20" x-on:click="mobileNavOpen = !mobileNavOpen"></div>
-        <nav
-            class="relative flex flex-col py-7 px-10 w-full h-full bg-gray-900/30 backdrop-blur-sm text-white overflow-y-auto">
-            <div class="flex items-center justify-between">
-                <a class="inline-block" href="{{ route('wisatawan.dashboard') }}">
-                    {{-- <img class="h-8" src="images/logo.svg" alt="Mobile Logo" /> --}}
+    @include('partials.swiper-wisata-terpopuler')
+
+    @if(isset($highlightWisata))
+    <section class="bg-gray-100 py-16">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+            <div>
+                <a href="{{ $highlightWisata->media->first()->url ?? '' }}" data-fancybox="galeri"
+                    data-caption="{{ $highlightWisata->deskripsi ?? 'Foto Wisata' }}">
+                    <img src="{{ $highlightWisata->media->first()->url ?? '' }}" alt="Highlight Wisata"
+                        class="rounded-2xl w-full aspect-video object-cover aspect-square hover:scale-105 transition-transform duration-200">
                 </a>
-                <div class="flex items-center" x-data="{ open: false }">
-                    @auth
-                    <button @click="open = !open"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-white border border-white rounded-full hover:text-lime-400">
-                        {{ Auth::user()->name }}
-                        <svg class="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414L10 13.414 5.293 8.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd" />
-                        </svg>
-                    </button>
 
-                    <div x-show="open" @click.outside="open = false"
-                        class="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded-lg shadow-lg z-50">
-                        <a href="{{ route('profil') }}" class="block px-4 py-2 hover:bg-gray-100">Profil</a>
+            </div>
+            <div>
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">{{ $highlightWisata->nama }}</h3>
+                <p class="text-gray-700 mb-6">{{ $highlightWisata->deskripsi }}</p>
+                <a href="{{ route('wisata.detail', $highlightWisata->id) }}"
+                    class="bg-lime-500 text-white px-6 py-3 rounded-full hover:bg-lime-600 transition">Lihat
+                    Selengkapnya</a>
+            </div>
+        </div>
+    </section>
+    @endif
 
-                        @if(Auth::user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100">Panel
-                            Admin</a>
-                        @endif
-
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                class="block w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-                        </form>
-                    </div>
-                    @endauth
-
-
-                    <button x-on:click="mobileNavOpen = !mobileNavOpen">
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M23.2 8.8L8.8 23.2M8.8 8.8L23.2 23.2" stroke="#ffffff" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
+    @isset($gridFotos)
+    @if($gridFotos->isNotEmpty())
+    <section class="bg-white py-16" data-aos="fade-up">
+        <div class="container mx-auto px-6">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-8" data-aos="fade-down">Galeri Wisata</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                @foreach($gridFotos as $foto)
+                <div class="rounded-xl overflow-hidden shadow-sm hover:shadow-md transition" data-aos="zoom-in"
+                    data-aos-delay="{{ $loop->index * 100 }}">
+                    <a href="{{ $foto->url }}" data-fancybox="galeri"
+                        data-caption="{{ $foto->deskripsi ?? 'Foto Wisata' }}">
+                        <img src="{{ $foto->url }}" alt="{{ $foto->deskripsi ?? 'Foto Wisata' }}" loading="lazy"
+                            class="w-full h-full object-cover aspect-square hover:scale-105 transition-transform duration-200">
+                    </a>
                 </div>
+                @endforeach
             </div>
-
-            <!-- Mobile Links -->
-            <div class="pt-20 pb-12 mb-auto">
-                <ul class="flex-col">
-                    <li class="mb-6">
-                        <a class="text-white hover:text-lime-400 font-medium" href="{{ route('wisatawan.dashboard') }}">Beranda</a>
-                    </li>
-                    <li class="mb-6">
-                        <a class="text-white hover:text-lime-400 font-medium" href="{{ route('wisata') }}">Wisata</a>
-                    </li>
-                </ul>
-            </div>
-
-        </nav>
-    </div>
+        </div>
+    </section>
+    @endif
+    @endisset
 </section>

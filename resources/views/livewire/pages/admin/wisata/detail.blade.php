@@ -1,6 +1,7 @@
 <div class="max-w-7xl mx-auto py-8 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
     <div class="bg-white rounded-lg p-6 md:p-8 shadow md:col-span-2 space-y-6 self-start">
-        <a href="{{ route('admin.wisata') }}" class="mt-4 inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded">
+        <a href="{{ route('admin.wisata') }}"
+            class="mt-4 inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -23,16 +24,28 @@
         <p class="text-gray-700">{{ $wisata->deskripsi }}</p>
         <div>
             @if($wisata->media && $wisata->media->isNotEmpty())
-            @foreach($wisata->media as $media)
-            @if(Str::endsWith($media->url, ['.jpg', '.png', '.jpeg', 'webp', '.gif']))
-            <img src="{{ $media->url }}" class="rounded-xl mb-4 w-full" alt="Media Wisata">
-            @elseif(Str::endsWith($media->url, ['.mp4', '.webm']))
-            <video controls class="rounded-xl mb-4 w-full">
-                <source src="{{ $media->url }}" type="video/mp4">
-                Browser tidak mendukung video.
-            </video>
-            @endif
-            @endforeach
+            <div class="swiper mySwiper rounded-xl overflow-hidden">
+                <div class="swiper-wrapper">
+                    @foreach($wisata->media as $media)
+                    @if(Str::endsWith($media->url, ['.jpg', '.png', '.jpeg', 'webp', '.gif']))
+                    <div class="swiper-slide">
+                        <img src="{{ $media->url }}" class="w-full h-128 object-cover rounded-xl" alt="Media Wisata">
+                    </div>
+                    @elseif(Str::endsWith($media->url, ['.mp4', '.webm']))
+                    <div class="swiper-slide">
+                        <video controls class="w-full h-64 object-cover rounded-xl">
+                            <source src="{{ $media->url }}" type="video/mp4">
+                            Browser tidak mendukung video.
+                        </video>
+                    </div>
+                    @endif
+                    @endforeach
+                </div>
+                <!-- Navigasi -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
             @else
             <p class="text-gray-500">Belum ada media untuk wisata ini.</p>
             @endif
@@ -125,6 +138,20 @@
                 ★ {{ number_format($averageRating ?? 0, 1) }}/5
             </div>
         </div>
+         @if($wisata->link_informasi)
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Informasi Lebih Lanjut</h2>
+            <a href="{{ $wisata->link_informasi }}" target="_blank"
+                class="inline-flex items-center justify-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.828 14.828a4 4 0 01-5.656 0L3 8m0 0l3-3m-3 3l3 3m6-3h6m0 0l-3-3m3 3l-3 3" />
+                </svg>
+                Kunjungi Halaman Informasi
+            </a>
+        </div>
+        @endif
     </div>
     <script>
         let map;

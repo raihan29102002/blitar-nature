@@ -4,16 +4,28 @@
         <p class="text-gray-700">{{ $wisata->deskripsi }}</p>
         <div>
             @if($wisata->media && $wisata->media->isNotEmpty())
-            @foreach($wisata->media as $media)
-            @if(Str::endsWith($media->url, ['.jpg', '.png', '.jpeg', 'webp', '.gif']))
-            <img src="{{ $media->url }}" class="rounded-xl mb-4 w-full" alt="Media Wisata">
-            @elseif(Str::endsWith($media->url, ['.mp4', '.webm']))
-            <video controls class="rounded-xl mb-4 w-full">
-                <source src="{{ $media->url }}" type="video/mp4">
-                Browser tidak mendukung video.
-            </video>
-            @endif
-            @endforeach
+            <div class="swiper mySwiper rounded-xl overflow-hidden">
+                <div class="swiper-wrapper">
+                    @foreach($wisata->media as $media)
+                    @if(Str::endsWith($media->url, ['.jpg', '.png', '.jpeg', 'webp', '.gif']))
+                    <div class="swiper-slide">
+                        <img src="{{ $media->url }}" class="w-full h-128 object-cover rounded-xl" alt="Media Wisata">
+                    </div>
+                    @elseif(Str::endsWith($media->url, ['.mp4', '.webm']))
+                    <div class="swiper-slide">
+                        <video controls class="w-full h-64 object-cover rounded-xl">
+                            <source src="{{ $media->url }}" type="video/mp4">
+                            Browser tidak mendukung video.
+                        </video>
+                    </div>
+                    @endif
+                    @endforeach
+                </div>
+                <!-- Navigasi -->
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
             @else
             <p class="text-gray-500">Belum ada media untuk wisata ini.</p>
             @endif
@@ -105,6 +117,20 @@
                 ★ {{ number_format($averageRating ?? 0, 1) }}/5
             </div>
         </div>
+        @if($wisata->link_informasi)
+        <div class="bg-white rounded-lg shadow p-4">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Informasi Lebih Lanjut</h2>
+            <a href="{{ $wisata->link_informasi }}" target="_blank"
+                class="inline-flex items-center justify-center bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.828 14.828a4 4 0 01-5.656 0L3 8m0 0l3-3m-3 3l3 3m6-3h6m0 0l-3-3m3 3l-3 3" />
+                </svg>
+                Kunjungi Halaman Informasi
+            </a>
+        </div>
+        @endif
 
         @auth
         @if(auth()->user()->role !== 'admin')
@@ -140,6 +166,12 @@
                     <textarea wire:model.defer="feedback" id="feedback" class="w-full border rounded px-3 py-2"
                         rows="3"></textarea>
                     @error('feedback') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label for="image" class="block text-sm font-medium text-gray-600">Upload Gambar (opsional)</label>
+                    <input type="file" wire:model="images" multiple id="images"
+                        class="block w-full text-sm text-gray-600 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
+                    @error('image') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
                 <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
                     Kirim
@@ -193,6 +225,13 @@
             <div class="text-sm text-gray-700 font-semibold mb-1">
                 {{ $fb->user->name ?? 'Anonim' }}
             </div>
+            @if($fb->images && $fb->images->count() > 0)
+            <div class="mt-2 flex flex-wrap gap-2">
+                @foreach ($fb->images as $img)
+                    <img src="{{ $img->image_path }}" class="w-24 h-24 object-cover rounded border">
+                @endforeach
+            </div>
+            @endif
             <div class="text-yellow-500 text-sm mb-1">
                 @for($i = 1; $i <= 5; $i++) @if($i <=$fb->rating) ★ @else ☆ @endif
                     @endfor
@@ -201,12 +240,14 @@
             <div class="text-sm text-gray-700 mb-1">
                 <strong>Komentar:</strong> {{ $fb->feedback ?? '-' }}
             </div>
+
             @if($fb->response_admin)
-            <div class="bg-gray-100 text-sm text-gray-600 p-2 rounded">
+            <div class="bg-gray-100 text-sm text-gray-600 p-2 rounded mt-2">
                 <strong>Respon Admin:</strong> {{ $fb->response_admin }}
             </div>
             @endif
 
+            {{-- Form balasan admin --}}
             @auth
             @if(auth()->user()->role === 'admin')
             <div class="mt-2">
@@ -222,6 +263,7 @@
 
         </div>
         @endforeach
+
         <div class="mt-4">
             {{ $feedbacks->links() }}
         </div>

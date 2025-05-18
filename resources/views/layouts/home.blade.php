@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929596/fiks_bg_dzgsh3.png">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -14,6 +15,10 @@
 
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased">
@@ -56,6 +61,18 @@
 
     </div>
     @livewireScripts
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        AOS.init({
+            once: true, // animasi hanya muncul sekali
+            duration: 800, // durasi animasi (ms)
+            easing: 'ease-in-out', // tipe transisi
+        });
+    </script>
+    @stack('scripts')
 </body>
 
 </html>

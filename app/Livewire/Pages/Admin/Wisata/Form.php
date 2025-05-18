@@ -13,7 +13,7 @@ class Form extends Component
 {
     use WithFileUploads;
 
-    public $wisataId, $nama, $deskripsi, $koordinat_x, $koordinat_y, $harga_tiket, $status_pengelolaan, $status_tiket;
+    public $wisataId, $nama, $deskripsi, $koordinat_x, $koordinat_y, $harga_tiket, $status_pengelolaan, $status_tiket, $link_informasi;
     public $kategori;
     public $selectedFasilitas = [];
     public $mediaFiles = [];
@@ -50,6 +50,7 @@ class Form extends Component
             $this->selectedFasilitas = $wisata->fasilitas->pluck('id')->toArray();
             $this->checkTiketStatus();
             $this->harga_tiket = $wisata->harga_tiket;
+            $this->link_informasi = $wisata->link_informasi;
             $this->mediaLama = $wisata->media->map(function ($media) {
                 return [
                     'url' => $media->url,
@@ -70,6 +71,8 @@ class Form extends Component
             'harga_tiket' => $this->status_tiket === 'berbayar' ? 'required|numeric|min:1' : 'nullable|numeric',
             'status_pengelolaan' => 'required',
             'status_tiket' => 'required|in:berbayar,gratis',
+            'link_informasi' => 'nullable|url',
+            'mediaFiles' => 'nullable|array',
             'mediaFiles.*' => 'file|mimes:jpg,png,jpeg,webp,mp4,mov,avi|max:20480',
         ]);
 
@@ -82,6 +85,7 @@ class Form extends Component
             'harga_tiket' => $this->status_tiket === 'gratis' ? 0 : $this->harga_tiket,
             'status_pengelolaan' => $this->status_pengelolaan,
             'status_tiket' => $this->status_tiket,
+            'link_informasi' => $this->link_informasi,
         ]);
 
         $wisata->fasilitas()->sync($this->selectedFasilitas);
@@ -114,6 +118,7 @@ class Form extends Component
         }
 
         return redirect()->route('admin.wisata')->with('message', 'Data berhasil disimpan!');
+        $this->reset('mediaFiles');
     }
     protected $layout = 'layouts.admin';
 
