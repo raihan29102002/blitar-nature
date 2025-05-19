@@ -29,7 +29,7 @@ class Pengunjung extends Component
 
         Excel::import(new KunjunganImport, $this->excelFile);
 
-        session()->flash('message', 'Data berhasil diimpor!');
+        $this->dispatch('showToast', 'success', 'Data Pengunjung berhasil diimport.');
     }
 
 
@@ -79,7 +79,9 @@ class Pengunjung extends Component
             ]);
         }
 
-        session()->flash('message', $this->editMode ? 'Data berhasil diperbarui!' : 'Data berhasil ditambahkan!');
+        $this->dispatch('showToast', $this->editMode ? 'success' : 'success', $this->editMode
+            ? 'Data Pengunjung berhasil diupdate.'
+            : 'Data Pengunjung berhasil ditambahkan.');
 
         $this->resetFields();
     }
@@ -98,7 +100,7 @@ class Pengunjung extends Component
     public function delete($id)
     {
         Kunjungan::findOrFail($id)->delete();
-        session()->flash('message', 'Data berhasil dihapus!');
+        $this->dispatch('showToast', 'success', 'Data Pengunjung berhasil dihapus.');
     }
 
     public function render()

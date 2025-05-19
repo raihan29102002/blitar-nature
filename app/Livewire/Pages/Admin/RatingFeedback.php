@@ -60,7 +60,7 @@ class RatingFeedback extends Component
         $review->response_admin = $this->responText;
         $review->save();
 
-        session()->flash('message', 'Respon berhasil disimpan.');
+        $this->dispatch('showToast', 'success', 'Admin berhasil merespon review.');
 
         $this->editMode = false;
     }

@@ -182,17 +182,6 @@
         @else
         <div class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Beri Feedback</h2>
-            @if (session()->has('success'))
-            <div class="p-2 mb-3 text-green-700 bg-green-100 rounded">
-                {{ session('success') }}
-            </div>
-            @endif
-
-            @if (session()->has('error'))
-            <div class="p-2 mb-3 text-red-700 bg-red-100 rounded">
-                {{ session('error') }}
-            </div>
-            @endif
             <form onsubmit="return showLoginAlert(event)" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-600">Rating</label>

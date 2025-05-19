@@ -11,9 +11,6 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
     public function create(): View
     {
         return view('auth.login');
@@ -24,13 +21,19 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         session()->regenerate();
+        $user = Auth::user();
+        session()->flash('toast', [
+            'type' => 'success',
+            'message' => 'Selamat datang, ' . $user->name . '!'
+        ]);
+
+        if ($user->role === 'admin') {
+            return redirect()->intended('/admin/dashboard');
+        }
 
         return redirect()->intended();
     }
 
-    /**
-     * Destroy an authenticated session.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -38,6 +41,10 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
+        session()->flash('toast', [
+            'type' => 'warning',
+            'message' => 'Selamat tinggal !!'
+        ]);
 
         return redirect('/');
     }

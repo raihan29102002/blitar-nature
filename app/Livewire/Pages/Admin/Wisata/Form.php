@@ -116,9 +116,12 @@ class Form extends Component
                 }
             }
         }
-
-        return redirect()->route('admin.wisata')->with('message', 'Data berhasil disimpan!');
         $this->reset('mediaFiles');
+
+        return redirect()->route('admin.wisata')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Wisata berhasil disimpan!',
+        ]);
     }
     protected $layout = 'layouts.admin';
 

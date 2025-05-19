@@ -97,15 +97,17 @@
                     </div>
                 </aside>
             </div>
-
             <main class="flex-1 w-full min-h-screen p-16 bg-white shadow-md">
                 {{ $slot }}
             </main>
+            @livewire('notification-toast')
+            @livewire('toast-redirect')
         </div>
     </div>
     @livewireScripts
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    
 </body>
 
 </html>

@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png"
+        href="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929596/fiks_bg_dzgsh3.png">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -14,5 +16,7 @@
 </head>
 <body class="font-sans antialiased text-gray-900 dark:text-white">
     {{ $slot }}
+    @livewire('notification-toast')
+    @livewire('toast-redirect')
 </body>
 </html>

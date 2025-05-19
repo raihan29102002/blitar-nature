@@ -19,7 +19,9 @@ class Wisata extends Component
 
     public $search = '';
     public $sortDirection = 'asc';
-    
+    protected $listeners = ['refreshWisata' => '$refresh'];
+
+
     public function updatedSearch()
     {
         $this->resetPage();
@@ -32,8 +34,7 @@ class Wisata extends Component
 
 
     protected $paginationTheme = 'tailwind';
-    
-    protected $middleware = ['auth', 'role:admin'];
+
     public $nama, $deskripsi, $koordinat_x, $koordinat_y, $status_pengelolaan, $harga_tiket, $status_tiket, $wisataId;
     public $isModalOpen = false;
     protected $rules = [
@@ -45,9 +46,12 @@ class Wisata extends Component
         'harga_tiket' => 'required|numeric',
         'status_tiket' => 'required',
     ];
-    protected $layout = 'layouts.admin';
     public function render()
     {
+        if (session('toast')) {
+            $toast = session('toast');
+            $this->dispatch('showToast', $toast['type'], $toast['message']);
+        }
         $wisatas = WisataModel::where('nama', 'like', '%' . $this->search . '%')
             ->orderBy('nama', $this->sortDirection)
             ->paginate(10);
@@ -81,7 +85,15 @@ class Wisata extends Component
 
     public function saveWisata()
     {
-        $this->validate();
+        $this->validate([
+            'nama' => 'required',
+            'deskripsi' => 'required',
+            'koordinat_x' => 'required',
+            'koordinat_y' => 'required',
+            'status_pengelolaan' => 'required',
+            'status_tiket' => 'required|in:gratis,berbayar',
+            'harga_tiket' => $this->status_tiket === 'berbayar' ? 'required|numeric|min:1' : 'nullable|numeric',
+        ]);
 
         WisataModel::updateOrCreate(['id' => $this->wisataId], [
             'nama' => $this->nama,
@@ -93,10 +105,14 @@ class Wisata extends Component
             'status_tiket' => $this->status_tiket,
         ]);
 
-        session()->flash('message', $this->wisataId ? 'Wisata berhasil diupdate.' : 'Wisata berhasil ditambahkan.');
-
+        $this->dispatch(
+            'showToast',
+            $this->wisataId ? 'success' : 'success',
+            $this->wisataId ? 'Wisata berhasil diupdate.' : 'Wisata berhasil ditambahkan.'
+        );
         $this->closeModal();
         $this->resetInputFields();
+        $this->dispatch('refreshWisata');
     }
 
     public function editWisata($id)
@@ -118,7 +134,7 @@ class Wisata extends Component
     public function deleteWisata($id)
     {
         WisataModel::find($id)->delete();
-        session()->flash('message', 'Wisata berhasil dihapus.');
+        $this->dispatch('showToast', 'success', 'Wisata berhasil dihapus.');
     }
     public function importExcel()
     {
@@ -127,13 +143,11 @@ class Wisata extends Component
         ]);
 
         Excel::import(new WisataImport, $this->excelFile);
-
-        session()->flash('message', 'Data wisata berhasil diimpor!');
+        $this->dispatch('showToast', 'success', 'Data wisata berhasil diimport.');
     }
 
     public function exportWisata()
     {
         return Excel::download(new WisataExport, 'data_wisata.xlsx');
     }
-
 }

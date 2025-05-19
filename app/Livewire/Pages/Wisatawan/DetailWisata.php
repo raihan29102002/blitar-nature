@@ -7,21 +7,20 @@ use App\Models\Wisata;
 use App\Models\RatingFeedback;
 use App\Models\ReviewImage;
 use Livewire\WithPagination;
-use App\Models\User;
-use Illuminate\Support\Facades\Http;
 use Livewire\WithFileUploads;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-
 
 class DetailWisata extends Component
 {
     use WithPagination, WithFileUploads;
+
     public $wisata;
     public $rating = 0;
     public $feedback;
     public $averageRating;
     public $response_admin = [];
     public $images = [];
+
     protected $paginationTheme = 'tailwind';
     protected $queryString = ['page'];
 
@@ -35,67 +34,12 @@ class DetailWisata extends Component
     {
         $this->wisata = Wisata::with(['media', 'ratings.user', 'fasilitas'])->findOrFail($id);
         $this->calculateAverageRating();
-
         $this->getGoogleReviews();
     }
 
     protected function calculateAverageRating()
     {
         $this->averageRating = round($this->wisata->ratings->avg('rating') ?? 0, 1);
-    }
-    public function getGoogleReviews()
-    {
-        $apiKey = env('GOOGLE_MAPS_KEY');
-        $namaTempat = $this->wisata->nama . ' Blitar';
-
-        $searchResponse = Http::get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json", [
-            'input' => $namaTempat,
-            'inputtype' => 'textquery',
-            'fields' => 'place_id',
-            'key' => $apiKey,
-        ]);
-
-        $placeId = $searchResponse['candidates'][0]['place_id'] ?? null;
-        if (!$placeId) return;
-
-        $detailResponse = Http::get("https://maps.googleapis.com/maps/api/place/details/json", [
-            'place_id' => $placeId,
-            'fields' => 'reviews',
-            'key' => $apiKey,
-        ]);
-
-
-        $reviews = $detailResponse['result']['reviews'] ?? [];
-        dd($reviews);
-
-        $googleUser = User::find(9);
-        if (!$googleUser) {
-            // Kalau user ID 9 belum ada, bisa buat dulu
-            $googleUser = User::create([
-                'id' => 9,
-                'name' => 'Google Reviewer',
-                'email' => 'google@review.com',
-                'password' => bcrypt('secret'), // password default
-            ]);
-        }
-
-        RatingFeedback::where('user_id', $googleUser->id)
-            ->where('wisata_id', $this->wisata->id)
-            ->delete();
-
-        foreach ($reviews as $review) {
-            RatingFeedback::create([
-                'user_id' => $googleUser->id,
-                'wisata_id' => $this->wisata->id,
-                'rating' => $review['rating'],
-                'feedback' => $review['text'] ?? 'Tidak ada komentar.',
-                'created_at' => now()->subDays(rand(1, 30)),
-            ]);
-        }
-
-        // Refresh data
-        $this->wisata->refresh();
-        $this->calculateAverageRating();
     }
 
     public function submitRating()
@@ -108,6 +52,10 @@ class DetailWisata extends Component
 
         if ($existingRating) {
             $this->addError('rating', 'Anda sudah memberikan feedback untuk wisata ini.');
+            session()->flash('toast', [
+                'type' => 'warning',
+                'message' => 'Anda sudah memberikan feedback untuk wisata ini.',
+            ]);
             return;
         }
 
@@ -119,7 +67,6 @@ class DetailWisata extends Component
                 'feedback' => $this->feedback,
             ]);
 
-            // Upload ke Cloudinary
             if ($this->images) {
                 foreach ($this->images as $image) {
                     if (!$image || !$image->getRealPath()) continue;
@@ -136,10 +83,9 @@ class DetailWisata extends Component
 
                         ReviewImage::create([
                             'rating_feedback_id' => $rating->id,
-                            'image_path' => $upload['secure_url'], // simpan URL cloudinary
+                            'image_path' => $upload['secure_url'],
                         ]);
                     } catch (\Exception $e) {
-                        // log error kalau mau
                         continue;
                     }
                 }
@@ -153,9 +99,15 @@ class DetailWisata extends Component
 
             $this->dispatch('rating-submitted');
 
-            session()->flash('success', 'Terima kasih atas feedback Anda!');
+            session()->flash('toast', [
+                'type' => 'success',
+                'message' => 'Terima kasih atas feedback Anda!',
+            ]);
         } catch (\Exception $e) {
-            $this->addError('rating', 'Terjadi kesalahan saat menyimpan feedback.');
+            session()->flash('toast', [
+                'type' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan feedback.',
+            ]);
         }
     }
 
@@ -171,9 +123,15 @@ class DetailWisata extends Component
                 'response_admin' => $this->response_admin[$id]
             ]);
 
-            session()->flash('success', 'Balasan berhasil dikirim.');
+            session()->flash('toast', [
+                'type' => 'success',
+                'message' => 'Balasan berhasil dikirim.',
+            ]);
         } catch (\Exception $e) {
-            session()->flash('error', 'Gagal mengirim balasan.');
+            session()->flash('toast', [
+                'type' => 'error',
+                'message' => 'Gagal mengirim balasan.',
+            ]);
         }
     }
 
@@ -183,6 +141,7 @@ class DetailWisata extends Component
             ->where('wisata_id', $this->wisata->id)
             ->latest()
             ->paginate(5);
+
         return view('livewire.pages.wisatawan.detail-wisata', [
             'feedbacks' => $feedbacks
         ])->layout('layouts.wisatawan');

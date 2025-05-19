@@ -51,7 +51,9 @@ class Fasilitas extends Component
             ['nama_fasilitas' => $this->nama_fasilitas]
         );
 
-        session()->flash('message', 'Fasilitas berhasil disimpan!');
+        $this->dispatch('showToast', $this->id ? 'success' : 'success', $this->id
+            ? 'Fasilitas berhasil diupdate.'
+            : 'Fasilitas berhasil ditambahkan.');
         $this->closeModal();
         $this->loadFasilitas();
     }
@@ -59,7 +61,7 @@ class Fasilitas extends Component
     public function deleteFasilitas($id)
     {
         MenuFasilitas::findOrFail($id)->delete();
-        session()->flash('message', 'Fasilitas berhasil dihapus.');
+        $this->dispatch('showToast', 'success', 'Fasilitas berhasil dihapus.');
         $this->loadFasilitas();
     }
     

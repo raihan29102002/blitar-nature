@@ -26,8 +26,8 @@ class Akun extends Component
     public function render()
     {
         $users = User::where('name', 'like', '%' . $this->search . '%')
-                     ->orWhere('email', 'like', '%' . $this->search . '%')
-                     ->paginate(10);
+            ->orWhere('email', 'like', '%' . $this->search . '%')
+            ->paginate(10);
 
         return view('livewire.pages.admin.akun', [
             'users' => $users,
@@ -67,7 +67,7 @@ class Akun extends Component
                 $user->password = Hash::make($this->password);
             }
             $user->save();
-            session()->flash('message', 'Akun berhasil diperbarui.');
+            $this->dispatch('showToast', 'success', 'Akun berhasil diperbarui.');
         } else {
             User::create([
                 'name' => $this->name,
@@ -75,7 +75,7 @@ class Akun extends Component
                 'role' => $this->role,
                 'password' => Hash::make($this->password),
             ]);
-            session()->flash('message', 'Akun berhasil ditambahkan.');
+            $this->dispatch('showToast', 'success', 'Akun berhasil ditambahkan.');
         }
 
         $this->closeModal();
@@ -84,6 +84,6 @@ class Akun extends Component
     public function deleteUser($id)
     {
         User::findOrFail($id)->delete();
-        session()->flash('message', 'Akun berhasil dihapus.');
+        $this->dispatch('showToast', 'success', 'Akun berhasil dihapus.');
     }
 }

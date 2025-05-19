@@ -1,11 +1,6 @@
 <div class="p-6 bg-white shadow-md rounded-lg w-full min-h-screen">
     <h1 class="text-3xl font-bold mt-6 mb-6 text-gray-700 ">Kelola Review Wisatawan</h1>
 
-    @if (session()->has('message'))
-    <div class="bg-green-100 text-green-800 p-2 mt-4 rounded">
-        {{ session('message') }}
-    </div>
-    @endif
     <div class="mb-4 relative w-full md:w-1/3">
         <input type="text" wire:model.live="search" placeholder="Cari berdasarkan nama pengguna atau wisata..."
             class="w-full pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">

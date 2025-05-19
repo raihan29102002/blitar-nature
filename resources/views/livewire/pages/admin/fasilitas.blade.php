@@ -10,12 +10,6 @@
         Tambah Fasilitas
     </button>
 
-    @if (session()->has('message'))
-    <div class="mt-4 text-green-600 font-semibold">
-        {{ session('message') }}
-    </div>
-    @endif
-
     <div class="overflow-x-auto mt-4 w-full">
         <table class="min-w-full table-auto text-sm text-left border-collapse">
             <thead>

@@ -34,6 +34,8 @@
         <main>
             {{ $slot }}
         </main>
+        @livewire('notification-toast')
+        @livewire('toast-redirect')
         <footer class="bg-gray-900 text-white mt-12">
             <div class="container mx-auto px-4 py-10">
                 <div class="flex flex-wrap justify-between">
