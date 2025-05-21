@@ -11,7 +11,7 @@
                             <div class="p-4">
                                 <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ $wisata->nama }}</h3>
                                 <p class="text-sm text-gray-600 mb-3 truncate">{{ $wisata->deskripsi }}</p>
-                                <a href="{{ route('wisata.detail', $wisata->id) }}"
+                                <a href="{{ route('wisata.detail', $wisata->slug) }}"
                                    class="inline-block px-4 py-2 bg-lime-600 text-white rounded-full hover:bg-lime-700 text-sm">
                                     Lihat Detail
                                 </a>

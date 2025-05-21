@@ -25,7 +25,7 @@ Route::get('/wisatawan/wisata', WisatawanWisata::class)
 Route::get('/wisatawan/profil', Profil::class)
     ->middleware(['auth'])
     ->name('profil');
-    Route::get('/wisata/{id}', DetailWisata::class)
+Route::get('/wisata/{slug}', DetailWisata::class)
     ->name('wisata.detail');
 
 

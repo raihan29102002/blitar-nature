@@ -42,7 +42,6 @@
                 budaya, dan keindahan alam yang menawan. Jelajahi pesonanya dari pantai hingga pegunungan sejuk.
             </p>
 
-            {{-- Video Profil --}}
             <div class="max-w-4xl mx-auto aspect-video">
                 <iframe class="w-full h-full rounded-xl shadow-lg" src="https://www.youtube.com/embed/opAdrIUhO3w"
                     title="Video Profil Kabupaten Blitar" frameborder="0"
@@ -55,23 +54,32 @@
 
     @include('partials.swiper-wisata-terpopuler')
 
-    @if(isset($highlightWisata))
+    @if (isset($highlightWisata))
     <section class="bg-gray-100 py-16">
         <div class="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+            <div class="md:col-span-2">
+                <h2 class="text-2xl md:text-3xl font-semibold text-center text-gray-800 mb-8">
+                    Highlight Wisata Kabupaten Blitar
+                </h2>
+            </div>
             <div>
                 <a href="{{ $highlightWisata->media->first()->url ?? '' }}" data-fancybox="galeri"
                     data-caption="{{ $highlightWisata->deskripsi ?? 'Foto Wisata' }}">
                     <img src="{{ $highlightWisata->media->first()->url ?? '' }}" alt="Highlight Wisata"
-                        class="rounded-2xl w-full aspect-video object-cover aspect-square hover:scale-105 transition-transform duration-200">
+                        class="rounded-2xl w-full aspect-video object-cover hover:scale-105 transition-transform duration-200">
                 </a>
-
             </div>
             <div>
-                <h3 class="text-3xl font-bold text-gray-800 mb-4">{{ $highlightWisata->nama }}</h3>
-                <p class="text-gray-700 mb-6">{{ $highlightWisata->deskripsi }}</p>
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">
+                    {{ $highlightWisata->nama }}
+                </h3>
+                <p class="text-gray-700 mb-6">
+                    {{ $highlightWisata->deskripsi }}
+                </p>
                 <a href="{{ route('wisata.detail', $highlightWisata->id) }}"
-                    class="bg-lime-500 text-white px-6 py-3 rounded-full hover:bg-lime-600 transition">Lihat
-                    Selengkapnya</a>
+                    class="inline-block bg-lime-500 text-white px-6 py-3 rounded-full hover:bg-lime-600 transition">
+                    Lihat Selengkapnya
+                </a>
             </div>
         </div>
     </section>

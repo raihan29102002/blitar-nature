@@ -3,7 +3,7 @@
     
     <!-- Search Input -->
     <div class="flex justify-center mb-6">
-        <input type="text" wire:model.live="search"
+        <input type="text" wire:model.live.debounce.500ms="search"
             class="w-full md:w-1/2 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-teal-400"
             placeholder="Cari nama wisata...">
     </div>
@@ -64,7 +64,7 @@
                 </div>
 
                 <!-- Detail Button -->
-                <a href="{{ route('wisata.detail', $wisata->id) }}" 
+                <a href="{{ route('wisata.detail', $wisata->slug) }}" 
                    class="block text-center bg-teal-600 text-white py-2 text-sm font-medium hover:bg-teal-700 transition">
                     Lihat Detail
                 </a>
@@ -74,7 +74,7 @@
         
         <!-- Pagination -->
         <div class="w-full px-4">
-            {{ $wisatas->links('pagination::tailwind') }}
+            {{ $wisatas->links() }}
         </div>
     </div>
 </div>

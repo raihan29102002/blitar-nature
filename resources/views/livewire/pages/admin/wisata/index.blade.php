@@ -94,7 +94,7 @@
                             </svg>
                             Edit
                         </a>
-                        <a href="{{ route('admin.wisata.detail', $wisata->id) }}"
+                        <a href="{{ route('admin.wisata.detail', $wisata->slug) }}"
                             class="inline-flex items-center text-blue-500 font-semibold hover:underline">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">

@@ -30,11 +30,10 @@ class DetailWisata extends Component
         'images.*' => 'nullable|image|max:2048',
     ];
 
-    public function mount($id)
+    public function mount($slug)
     {
-        $this->wisata = Wisata::with(['media', 'ratings.user', 'fasilitas'])->findOrFail($id);
+        $this->wisata = Wisata::with(['media', 'ratings.user', 'fasilitas'])->where('slug', $slug)->firstOrFail();
         $this->calculateAverageRating();
-        $this->getGoogleReviews();
     }
 
     protected function calculateAverageRating()

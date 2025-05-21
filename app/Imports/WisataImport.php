@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Wisata;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class WisataImport implements ToModel, WithHeadingRow
@@ -16,6 +17,7 @@ class WisataImport implements ToModel, WithHeadingRow
         }
         return new Wisata([
             'nama'              => $row['nama'],
+            'slug'              => Str::slug($row['nama']). '-' . uniqid(),
             'deskripsi'         => $row['deskripsi'],
             'kategori'          => $row['kategori'],
             'koordinat_x'       => $row['koordinat_x'],

@@ -33,6 +33,7 @@ class Wisata extends Component
 
     public function render()
     {
+        
         return view('livewire.pages.wisatawan.wisata', [
             'wisatas' => $this->loadFilteredWisata(),
         ])->layout('layouts.wisatawan');
