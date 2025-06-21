@@ -11,24 +11,109 @@
             <textarea wire:model="deskripsi" placeholder="Deskripsi singkat wisata..."
                 class="w-full p-2 border rounded mb-4"></textarea>
 
-            <label class="block mb-2">Koordinat X</label>
-            <input type="text" wire:model="koordinat_x" placeholder="-8.12345" class="w-full p-2 border rounded mb-4">
-
-            <label class="block mb-2">Koordinat Y</label>
-            <input type="text" wire:model="koordinat_y" placeholder="112.12345" class="w-full p-2 border rounded mb-4">
+            <div class="mb-4">
+                <label class="block mb-2">Pilih Lokasi di Peta</label>
+                <div 
+                    x-data="{
+                        map: null,
+                        marker: null,
+                        initGoogleMaps() {
+                            // Fungsi untuk memuat Google Maps
+                            const loadMap = () => {
+                                const defaultCenter = { 
+                                    lat: {{ $koordinat_x ?: '-8.0955' }}, 
+                                    lng: {{ $koordinat_y ?: '112.1686' }} 
+                                };
+                                
+                                this.map = new google.maps.Map(this.$el, {
+                                    center: defaultCenter,
+                                    zoom: 14,
+                                    mapTypeId: 'hybrid',
+                                    gestureHandling: 'greedy'
+                                });
+                                
+                                @if($koordinat_x && $koordinat_y)
+                                    this.addMarker({ 
+                                        lat: {{ $koordinat_x }}, 
+                                        lng: {{ $koordinat_y }} 
+                                    });
+                                @endif
+                                
+                                this.map.addListener('click', (e) => {
+                                    this.addMarker(e.latLng);
+                                    @this.set('koordinat_x', e.latLng.lat().toFixed(6));
+                                    @this.set('koordinat_y', e.latLng.lng().toFixed(6));
+                                });
+                            };
+        
+                            // Cek apakah Google Maps sudah dimuat
+                            if (typeof google === 'undefined') {
+                                const script = document.createElement('script');
+                                script.src = `https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&callback=initMap`;
+                                script.defer = true;
+                                document.head.appendChild(script);
+                                window.initMap = loadMap;
+                            } else {
+                                loadMap();
+                            }
+                        },
+                        addMarker(position) {
+                            if (this.marker) {
+                                this.marker.setPosition(position);
+                            } else {
+                                this.marker = new google.maps.Marker({
+                                    position: position,
+                                    map: this.map,
+                                    draggable: true,
+                                    title: 'Lokasi Wisata'
+                                });
+                                
+                                this.marker.addListener('dragend', (e) => {
+                                    @this.set('koordinat_x', e.latLng.lat().toFixed(6));
+                                    @this.set('koordinat_y', e.latLng.lng().toFixed(6));
+                                });
+                            }
+                            this.map.panTo(position);
+                        }
+                    }"
+                    x-init="initGoogleMaps()"
+                    wire:ignore
+                    id="googleMap" 
+                    style="height: 350px; width: 100%; border-radius: 8px; border: 1px solid #e2e8f0;"
+                ></div>
+            </div>
+        
+            <!-- Input Koordinat (otomatis terisi) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block mb-2">Latitude (X)</label>
+                    <input 
+                        type="text" 
+                        wire:model="koordinat_x" 
+                        placeholder="Contoh: -8.123456" 
+                        class="w-full p-2 border rounded bg-gray-50"
+                        readonly
+                    >
+                </div>
+                <div>
+                    <label class="block mb-2">Longitude (Y)</label>
+                    <input 
+                        type="text" 
+                        wire:model="koordinat_y" 
+                        placeholder="Contoh: 112.123456" 
+                        class="w-full p-2 border rounded bg-gray-50"
+                        readonly 
+                    >
+                </div>
+            </div>
 
             <label class="block mb-2">Kategori</label>
             <select wire:model="kategori" class="w-full p-2 border rounded mb-4">
                 <option value="">Pilih Kategori</option>
-                <option value="air_terjun">Air Terjun</option>
-                <option value="pegunungan">Pegunungan</option>
-                <option value="pantai">Pantai</option>
-                <option value="perairan">Perairan</option>
-                <option value="hutan">Hutan</option>
-                <option value="perkemahan">Perkemahan</option>
-                <option value="buatan">Buatan</option>
-                <option value="religi">Religi</option>
-                <option value="lainnya">Lainnya</option>
+                <option value="Alam">Alam</option>
+                <option value="Budaya">Budaya</option>
+                <option value="Buatan">Buatan</option>
+                <option value="Lainnya">Lainnya</option>
             </select>
 
             <label class="block mb-2">Status Pengelolaan</label>

@@ -26,6 +26,7 @@ class Profil extends Component
         $this->name = $this->user->name;
         $this->email = $this->user->email;
         $this->alamat = $this->user->alamat;
+        
     }
 
     public function updateProfile()
@@ -42,7 +43,24 @@ class Profil extends Component
             $rules['new_password'] = 'required|min:6|confirmed';
         }
 
-        $validated = $this->validate($rules);
+        $messages = [
+            'name.required' => 'Nama lengkap wajib diisi',
+            'name.string' => 'Nama harus berupa teks',
+            'name.max' => 'Nama tidak boleh lebih dari 255 karakter',
+            'email.required' => 'Alamat email wajib diisi',
+            'email.email' => 'Format email tidak valid',
+            'email.unique' => 'Email ini sudah digunakan oleh akun lain',
+            'alamat.string' => 'Alamat harus berupa teks',
+            'alamat.max' => 'Alamat tidak boleh lebih dari 255 karakter',
+            'foto_profil.image' => 'File harus berupa gambar (JPEG, PNG, JPG)',
+            'foto_profil.max' => 'Ukuran gambar tidak boleh lebih dari 1MB',
+            'current_password.required' => 'Password lama wajib diisi',
+            'new_password.required' => 'Password baru wajib diisi',
+            'new_password.min' => 'Password baru minimal 6 karakter',
+            'new_password.confirmed' => 'Konfirmasi password tidak sesuai',
+        ];
+
+        $validated = $this->validate($rules, $messages);
 
         $this->user->name = $this->name;
         $this->user->email = $this->email;
@@ -52,19 +70,16 @@ class Profil extends Component
             $upload = Cloudinary::uploadApi()->upload($this->foto_profil->getRealPath(), [
                 'folder' => 'foto_profil'
             ]);
-            
             $this->user->foto_profil = $upload['secure_url'];
-
         }
 
         if ($this->current_password && $this->new_password) {
             if (!Hash::check($this->current_password, $this->user->password)) {
-                $this->addError('current_password', 'Password lama tidak sesuai.');
+                $this->addError('current_password', 'Password lama tidak sesuai');
                 return;
             }
 
             $this->user->password = bcrypt($this->new_password);
-
             $this->current_password = $this->new_password = $this->new_password_confirmation = null;
         }
 
@@ -72,9 +87,10 @@ class Profil extends Component
 
         session()->flash('message', 'Profil berhasil diperbarui!');
     }
+
     public function render()
     {
         return view('livewire.pages.wisatawan.profil')
-        ->layout('layouts.wisatawan');;
+            ->layout('layouts.wisatawan');
     }
 }

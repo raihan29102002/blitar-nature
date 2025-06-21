@@ -1,5 +1,5 @@
 <div class="max-w-4xl mx-auto p-6 mt-8 bg-white rounded-2xl shadow-lg space-y-8">
-    <h2 class="text-2xl font-semibold text-gray-800 text-center">Profil Wisatawan</h2>
+    <h2 class="text-2xl font-semibold text-gray-800 text-center">Profil</h2>
 
     <!-- Informasi Akun -->
     <div class="space-y-4">

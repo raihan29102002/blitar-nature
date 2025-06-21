@@ -1,5 +1,5 @@
 <div class="container mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold mb-10 text-center">Daftar Wisata Alam</h1>
+    <h1 class="text-3xl font-bold mb-10 text-center">Daftar Wisata Di Kabupaten Blitar</h1>
     
     <!-- Search Input -->
     <div class="flex justify-center mb-6">

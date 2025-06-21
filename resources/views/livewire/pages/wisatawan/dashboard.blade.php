@@ -1,6 +1,10 @@
 <section class="relative bg-white overflow-hidden">
     <div class="relative h-screen w-full" x-data="{ currentIndex: 0, images: [
-        '/storage/img/monte.jpg', '/storage/img/pantai.jpg', '/storage/img/teh.jpg', '/storage/img/gunung.jpg', '/storage/img/terjun.jpg'
+        '{{ asset('img/monte.jpg') }}',
+        '{{ asset('img/pantai.jpg') }}',
+        '{{ asset('img/teh.jpg') }}',
+        '{{ asset('img/gunung.jpg') }}',
+        '{{ asset('img/terjun.jpg') }}',
     ], init() {
         setInterval(() => { this.currentIndex = (this.currentIndex + 1) % this.images.length }, 7000);
     } }" x-init="init()">
@@ -76,7 +80,7 @@
                 <p class="text-gray-700 mb-6">
                     {{ $highlightWisata->deskripsi }}
                 </p>
-                <a href="{{ route('wisata.detail', $highlightWisata->id) }}"
+                <a href="{{ route('wisata.detail', $highlightWisata->slug) }}"
                     class="inline-block bg-lime-500 text-white px-6 py-3 rounded-full hover:bg-lime-600 transition">
                     Lihat Selengkapnya
                 </a>

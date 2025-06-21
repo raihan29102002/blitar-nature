@@ -8,7 +8,6 @@
         const { Map } = await google.maps.importLibrary("maps");
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
-        // Inisialisasi peta
         let map = new Map(document.getElementById('map'), {
             center: { lat: -8.0955, lng: 112.1686 }, 
             zoom: 10,
@@ -41,25 +40,50 @@
                 });
                 info.open(map, marker);
             });
-
         });
-
 
         function getPinColor(kategori) {
             switch (kategori) {
-                case 'pantai': return '#0096c7';      // biru laut
-                case 'air_terjun': return '#00b4d8';  // tosca
-                case 'pegunungan': return '#2a9d8f';  // hijau teal
-                case 'perkemahan': return '#f4a261';  // oranye tanah
-                case 'hutan': return '#588157';       // hijau gelap
-                case 'perairan': return '#48cae4';    // biru muda
-                default: return '#e63946';            // merah untuk lainnya
+                case 'Alam': return '#0096c7';      
+                case 'Budaya': return '#f4a261';    
+                case 'Buatan': return '#588157';   
+                default: return '#e63946';         
             }
         }
+
+        const legend = document.createElement('div');
+        legend.id = 'legend';
+        legend.style.backgroundColor = 'white';
+        legend.style.padding = '10px';
+        legend.style.borderRadius = '5px';
+        legend.style.boxShadow = '0 2px 6px rgba(0,0,0,0.3)';
+        legend.style.fontFamily = 'Arial, sans-serif';
+        legend.style.fontSize = '14px';
+
+        legend.innerHTML = `
+            <h3 style="margin: 0 0 8px 0; font-size: 16px;">Kategori Wisata</h3>
+            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                <div style="width: 16px; height: 16px; background: #0096c7; margin-right: 8px; border-radius: 50%;"></div>
+                <span>Alam</span>
+            </div>
+            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                <div style="width: 16px; height: 16px; background: #f4a261; margin-right: 8px; border-radius: 50%;"></div>
+                <span>Budaya</span>
+            </div>
+            <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                <div style="width: 16px; height: 16px; background: #588157; margin-right: 8px; border-radius: 50%;"></div>
+                <span>Buatan</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <div style="width: 16px; height: 16px; background: #e63946; margin-right: 8px; border-radius: 50%;"></div>
+                <span>Lainnya</span>
+            </div>
+        `;
+
+        map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(legend);
     }
 </script>
 
-<!-- Panggil API Google Maps dengan callback -->
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&v=beta&callback=initMap&loading=async">
 </script>

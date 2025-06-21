@@ -1,5 +1,20 @@
 <div class="p-6 bg-white shadow-md rounded-lg w-full min-h-screen flex flex-col flex-grow">
     <h1 class="text-3xl font-bold mt-6 mb-6 text-gray-700">Data Fasilitas</h1>
+    
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+        <div class="relative w-full sm:w-64">
+            <input type="text" id="search" wire:model.live="search"
+                class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg pl-10 pr-3 py-2.5 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Search Fasilitas..." />
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1110 2.5a7.5 7.5 0 016.65 14.15z" />
+                </svg>
+            </div>
+        </div>
+    </div>
 
     <button wire:click="openModal()"
         class="inline-flex bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition self-start items-center">
@@ -20,7 +35,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y">
-                @foreach ($fasilitas as $index => $item)
+                @foreach ($fasilitasList as $index => $item)
                 <tr class="hover:bg-gray-100 transition">
                     <td class="px-4 py-3 border">{{ $index + 1 }}</td>
                     <td class="px-4 py-3 border font-medium text-gray-800">{{ $item['nama_fasilitas'] }}</td>

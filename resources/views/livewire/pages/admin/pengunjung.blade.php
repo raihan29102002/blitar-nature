@@ -12,6 +12,18 @@
         </button>
 
         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <div class="relative w-full sm:w-64">
+                <input type="text" id="search" wire:model.live="search"
+                    class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg pl-10 pr-3 py-2.5 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Search wisata..." />
+                <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-4.35-4.35M16.65 16.65A7.5 7.5 0 1110 2.5a7.5 7.5 0 016.65 14.15z" />
+                    </svg>
+                </div>
+            </div>
             <form wire:submit.prevent="importExcel" enctype="multipart/form-data" class="flex items-center gap-2">
                 <input type="file" wire:model="excelFile"
                     class="text-sm text-gray-700 border border-gray-300 rounded-md bg-white">
@@ -84,7 +96,7 @@
     </table>
 
     <!-- Modal Form -->
-    <div x-data="{ open: @entangle('editMode') }" x-show="open"
+    <div x-data="{ open: @entangle('showModal') }" x-show="open"
         class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white p-6 rounded-lg shadow-lg">
             <h2 class="text-xl font-semibold mb-4">Tambah/Edit Data Pengunjung</h2>
@@ -119,7 +131,7 @@
                     </svg>
                     Simpan
                 </button>
-                <button @click="open = false" class="inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-600 transition">
+                <button wire:click="closeModal" class="inline-flex items-center bg-gray-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-gray-600 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -131,6 +143,6 @@
         </div>
     </div>
     <div class="mt-4">
-        {{ $kunjunganList->links('pagination::tailwind') }}
+        {{ $kunjunganList->links() }}
     </div>
 </div>

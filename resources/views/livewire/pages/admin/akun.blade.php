@@ -54,8 +54,11 @@
                 @endforeach
             </tbody>
         </table>
+        
     </div>
-
+    <div class="mt-4">
+        {{ $users->links() }}
+    </div>
     {{-- Modal --}}
     @if ($modal)
     <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">

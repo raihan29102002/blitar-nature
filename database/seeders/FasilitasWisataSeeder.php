@@ -14,7 +14,7 @@ class FasilitasWisataSeeder extends Seeder
      */
     public function run(): void
     {
-        $wisatas = Wisata::all();
+        $wisatas = Wisata::whereBetween('id', [57, 132])->get();
         $fasilitas = Fasilitas::all()->pluck('id')->toArray();
 
         foreach ($wisatas as $wisata) {

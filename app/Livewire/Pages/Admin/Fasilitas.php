@@ -4,13 +4,20 @@ namespace App\Livewire\Pages\Admin;
 
 use Livewire\Component;
 use App\Models\Fasilitas as MenuFasilitas;
+use Livewire\WithPagination;
 
 class Fasilitas extends Component
 {
-    protected $middleware = ['auth', 'role:admin'];
     public $modal = false;
     public $id, $nama_fasilitas;
     public $fasilitas = [];
+    public $search = '';
+    use WithPagination;
+    
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
 
     public function mount()
     {
@@ -68,7 +75,12 @@ class Fasilitas extends Component
 
     public function render()
     {
-        return view('livewire.pages.admin.fasilitas')
-        ->layout('layouts.admin');
+        $fasilitasList = MenuFasilitas::where('nama_fasilitas', 'like', '%' . $this->search . '%')
+        ->orderBy('nama_fasilitas')
+        ->paginate(25);
+        
+        return view('livewire.pages.admin.fasilitas', [
+            'fasilitasList' => $fasilitasList
+        ])->layout('layouts.admin');
     }
 }

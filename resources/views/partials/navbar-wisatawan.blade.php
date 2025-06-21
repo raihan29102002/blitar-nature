@@ -1,6 +1,6 @@
 <nav class="sticky top-0 py-0 bg-gray-900/30 backdrop-blur-sm z-30">
     <div class="container mx-auto px-4 py-3">
-        <div class="relative flex items-center justify-between ms-20">
+        <div class="relative flex items-center justify-between ms-20"  x-data="{ open: false, mobileNavOpen: false }">
             <a class="inline-block" href="{{ route('wisatawan.dashboard') }}">
                 <img class="h-16 w-auto" src="https://res.cloudinary.com/ddvtpgszb/image/upload/v1746929595/fiks_kt64q1.png" alt="Logo Blitar Nature Explore" />
             </a>
@@ -64,6 +64,45 @@
                               stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
+                <div class="md:hidden" x-show="mobileNavOpen" @click.outside="mobileNavOpen = false">
+                    <ul class="flex flex-col space-y-2 bg-gray-900/90 backdrop-blur-sm p-4 mt-2 rounded-md">
+                        <li>
+                            <a class="text-white hover:text-lime-400 font-medium text-base"
+                               href="{{ route('wisatawan.dashboard') }}">Beranda</a>
+                        </li>
+                        <li>
+                            <a class="text-white hover:text-lime-400 font-medium text-base"
+                               href="{{ route('wisata') }}">Wisata</a>
+                        </li>
+                        @auth
+                            @if(Auth::user()->role === 'admin')
+                                <li>
+                                    <a class="text-white hover:text-lime-400 font-medium text-base"
+                                       href="{{ route('admin.dashboard') }}">Panel Admin</a>
+                                </li>
+                            @endif
+                            <li>
+                                <a class="text-white hover:text-lime-400 font-medium text-base"
+                                   href="{{ route('profil') }}">Profil</a>
+                            </li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="text-left text-white hover:text-lime-400 font-medium text-base w-full">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        @else
+                            <li>
+                                <a class="text-white hover:text-lime-400 font-medium text-base"
+                                   href="{{ route('login') }}">Login</a>
+                            </li>
+                        @endauth
+                    </ul>
+                </div>
+
             </div>
         </div>
     </div>

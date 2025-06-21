@@ -53,7 +53,7 @@
 
     <div class="space-y-6">
         <div class="bg-white rounded-lg shadow p-4 mt-4 flex items-start space-x-4 text-sm text-gray-600">
-            <div class="bg-white w-full h-64 rounded-lg mb-4 overflow-hidden shadow border" id="map"></div>
+            <div class="bg-white w-full h-64 rounded-lg mb-4 overflow-hidden shadow border" id="map" wire:ignore></div>
         </div>
 
         <div class="mt-4 space-y-2">
@@ -71,7 +71,7 @@
                 Open Direction
             </a>
 
-            <div id="alamat"
+            <div id="alamat" wire:ignore
                 class="bg-white rounded-lg shadow p-4 mt-4 flex items-start space-x-4 text-sm text-gray-600">
                 <div class="flex-1">
                     <h6 class="font-semibold text-gray-800 mb-1 flex items-center gap-1">
@@ -143,20 +143,32 @@
                     setRating(value) {
                         this.rating = value;
                         @this.set('rating', value);
+                    },
+                    // Tambahkan fungsi reset
+                    resetRating() {
+                        this.rating = 0;
+                        this.hoverRating = 0;
+                        @this.set('rating', 0); // Reset juga di Livewire
                     }
-                }" class="space-y-1">
+                }" 
+                    x-on:reset-rating.window="resetRating()" class="space-y-1">
                     <label class="block text-sm font-medium text-gray-600">Rating</label>
                     <div class="flex space-x-1">
-                        @for($i = 1; $i <= 5; $i++) <svg @click="setRating({{ $i }})"
-                            @mouseover="hoverRating = {{ $i }}" @mouseleave="hoverRating = 0" :class="{
+                        @for($i = 1; $i <= 5; $i++) 
+                            <svg @click="setRating({{ $i }})"
+                                @mouseover="hoverRating = {{ $i }}" 
+                                @mouseleave="hoverRating = 0" 
+                                :class="{
                                     'text-yellow-400': {{ $i }} <= (hoverRating || rating),
                                     'text-gray-300': {{ $i }} > (hoverRating || rating)
-                                }" class="w-8 h-8 cursor-pointer transition-colors" fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path
-                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 00.95.69h4.163c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.955c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.176 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.955a1 1 0 00-.364-1.118L2.07 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.955z" />
+                                }" 
+                                class="w-8 h-8 cursor-pointer transition-colors" 
+                                fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.955a1 1 0 00.95.69h4.163c.969 0 1.371 1.24.588 1.81l-3.37 2.448a1 1 0 00-.364 1.118l1.286 3.955c.3.921-.755 1.688-1.54 1.118l-3.37-2.448a1 1 0 00-1.176 0l-3.37 2.448c-.784.57-1.838-.197-1.539-1.118l1.286-3.955a1 1 0 00-.364-1.118L2.07 9.382c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.955z" />
                             </svg>
-                            @endfor
+                        @endfor
                     </div>
                     @error('rating') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                 </div>
@@ -172,6 +184,7 @@
                     <input type="file" wire:model="images" multiple id="images"
                         class="block w-full text-sm text-gray-600 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" />
                     @error('image') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    @error('images.*') <span class="error">{{ $message }}</span> @enderror
                 </div>
                 <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
                     Kirim
@@ -263,12 +276,18 @@
         <p class="text-sm text-gray-500">Belum ada ulasan.</p>
     </div>
     @endif
+    
     <script>
         let map;
         let marker;
     
         async function initMap() {
             try {
+                // Hapus peta lama jika ada
+                if (document.getElementById("map").hasChildNodes()) {
+                    document.getElementById("map").innerHTML = '';
+                }
+    
                 const latLng = { lat: {{ $wisata->koordinat_x }}, lng: {{ $wisata->koordinat_y }} };
                 
                 const { Map } = await google.maps.importLibrary("maps");
@@ -300,23 +319,40 @@
             }
         }
     
-        window.initMap = initMap;
-    
-        document.addEventListener("DOMContentLoaded", () => {
-            if (typeof google !== 'undefined') {
+        // Fungsi untuk memuat ulang Google Maps
+        function reloadGoogleMaps() {
+            if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+                loadGoogleMaps();
+            } else {
                 initMap();
             }
+        }
     
+        // Event listener untuk Livewire
+        document.addEventListener('livewire:load', function() {
+            reloadGoogleMaps();
+            
+            Livewire.hook('message.processed', (message, component) => {
+                // Tunggu sebentar untuk memastikan DOM sudah diupdate
+                setTimeout(reloadGoogleMaps, 100);
+            });
+        });
+        document.addEventListener('livewire:init', function() {
+            loadGoogleMaps();
+            
             Livewire.on('rating-submitted', () => {
-                if (typeof google !== 'undefined' && typeof initMap === 'function') {
-                    initMap();
-                }
+                setTimeout(reloadGoogleMaps, 300);
             });
         });
     </script>
 
     <script>
         function loadGoogleMaps() {
+            if (typeof google !== 'undefined' && typeof google.maps !== 'undefined') {
+                initMap();
+                return;
+            }
+        
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&v=weekly&loading=async&callback=initMap`;
             script.async = true;
@@ -326,11 +362,8 @@
             };
             document.head.appendChild(script);
         }
-    
-        document.addEventListener('livewire:init', () => {
-            loadGoogleMaps();
-        });
     </script>
+
 
     <script>
         function showLoginAlert(event) {

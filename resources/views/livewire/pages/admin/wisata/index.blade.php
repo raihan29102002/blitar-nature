@@ -7,6 +7,9 @@
                 class="text-sm text-gray-700 bg-white border border-gray-300 rounded-lg px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="asc">Sort: A-Z</option>
                 <option value="desc">Sort: Z-A</option>
+                <option value="alam">Sort: Alam</option>
+                <option value="budaya">Sort: Budaya</option>
+                <option value="buatan">Sort: Buatan</option>
             </select>
         </div>
 
@@ -69,6 +72,7 @@
                 <tr class="bg-blue-100 text-gray-700 uppercase text-xs">
                     <th class="px-4 py-3 border">No</th>
                     <th class="px-4 py-3 border">Nama Wisata</th>
+                    <th class="px-4 py-3 border">Kategori</th>
                     <th class="px-4 py-3 border">Koordinat X</th>
                     <th class="px-4 py-3 border">Koordinat Y</th>
                     <th class="px-4 py-3 border">Harga Tiket</th>
@@ -80,6 +84,7 @@
                 <tr class="hover:bg-gray-100 transition">
                     <td class="px-4 py-3 border">{{ $index + 1 }}</td>
                     <td class="px-4 py-3 border font-medium text-gray-800">{{ $wisata->nama }}</td>
+                    <td class="px-4 py-3 border font-medium text-gray-800">{{ $wisata->kategori }}</td>
                     <td class="px-4 py-3 border">{{ $wisata->koordinat_x }}</td>
                     <td class="px-4 py-3 border">{{ $wisata->koordinat_y }}</td>
                     <td class="px-4 py-3 border font-semibold text-green-600">Rp{{ number_format($wisata->harga_tiket,
@@ -94,7 +99,7 @@
                             </svg>
                             Edit
                         </a>
-                        <a href="{{ route('admin.wisata.detail', $wisata->slug) }}"
+                        <a href="{{ route('admin.wisata.detail', $wisata->id) }}"
                             class="inline-flex items-center text-blue-500 font-semibold hover:underline">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -122,7 +127,7 @@
     </div>
 
     <div class="mt-4">
-        {{ $wisatas->links('pagination::tailwind') }}
+        {{ $wisatas->links() }}
     </div>
 
 </div>

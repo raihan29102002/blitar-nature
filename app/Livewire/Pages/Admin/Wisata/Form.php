@@ -22,6 +22,44 @@ class Form extends Component
     public $showHargaTiket = false;
     public $mediaLama = [];
     public $uploadError;
+    public $mapCenter = [-8.0955, 112.1686];
+
+    // Pesan validasi dalam bahasa Indonesia
+    protected $messages = [
+        // Validasi nama wisata
+        'nama.required' => 'Nama wisata wajib diisi',
+        'nama.string' => 'Nama wisata harus berupa teks',
+        'nama.max' => 'Nama wisata maksimal 255 karakter',
+        
+        // Validasi deskripsi
+        'deskripsi.string' => 'Deskripsi harus berupa teks',
+        
+        // Validasi koordinat
+        'koordinat_x.required' => 'Koordinat X wajib diisi',
+        'koordinat_x.numeric' => 'Koordinat X harus berupa angka',
+        'koordinat_y.required' => 'Koordinat Y wajib diisi',
+        'koordinat_y.numeric' => 'Koordinat Y harus berupa angka',
+        
+        // Validasi kategori
+        'kategori.required' => 'Kategori wisata wajib diisi',
+        
+        // Validasi harga tiket
+        'harga_tiket.required' => 'Harga tiket wajib diisi untuk wisata berbayar',
+        'harga_tiket.numeric' => 'Harga tiket harus berupa angka',
+        
+        // Validasi status pengelolaan
+        'status_pengelolaan.required' => 'Status pengelolaan wajib dipilih',
+        
+        // Validasi status tiket
+        'status_tiket.required' => 'Status tiket wajib dipilih',
+        'status_tiket.in' => 'Status tiket harus berbayar atau gratis',
+        
+        'link_informasi.url' => 'Format link informasi tidak valid',
+
+        'mediaFiles.*.file' => 'File harus berupa file yang valid',
+        'mediaFiles.*.mimes' => 'Format file harus JPG, PNG, JPEG, WEBP, MP4, MOV, atau AVI',
+        'mediaFiles.*.max' => 'Ukuran file maksimal 20MB',
+    ];
 
     public function checkTiketStatus()
     {
@@ -43,6 +81,7 @@ class Form extends Component
             $this->deskripsi = $wisata->deskripsi;
             $this->koordinat_x = $wisata->koordinat_x;
             $this->koordinat_y = $wisata->koordinat_y;
+            $this->mapCenter = [$wisata->koordinat_y, $wisata->koordinat_x];
             $this->kategori = $wisata->kategori;
             $this->harga_tiket = $wisata->harga_tiket;
             $this->status_pengelolaan = $wisata->status_pengelolaan;
@@ -58,6 +97,11 @@ class Form extends Component
                 ];
             })->toArray();
         }
+    }
+    public function setLocation($lat, $lng)
+    {
+        $this->koordinat_x = $lat;
+        $this->koordinat_y = $lng;
     }
 
     public function save()
@@ -112,6 +156,7 @@ class Form extends Component
                         'type' => $type
                     ]);
                 } catch (\Exception $e) {
+                    $this->uploadError = "Gagal mengupload file: " . $e->getMessage();
                     continue;
                 }
             }
@@ -123,13 +168,13 @@ class Form extends Component
             'message' => 'Data Wisata berhasil disimpan!',
         ]);
     }
+
     protected $layout = 'layouts.admin';
 
     public function render()
     {
         return view('livewire.pages.admin.wisata.form', [
             'allFasilitas' => Fasilitas::all(),
-        ])
-            ->layout('layouts.admin');
+        ])->layout('layouts.admin');
     }
 }

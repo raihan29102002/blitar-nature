@@ -14,7 +14,7 @@ class Wisata extends Component
 
     public $userLat;
     public $userLng;
-    public $filter = 'default';
+    public $filter = 'pengunjung-sedikit';
     public $perPage = 8;
     public $search = '';
     
@@ -114,6 +114,7 @@ class Wisata extends Component
             'lokasi' => $collection->sortBy('jarak')->values(),
             'rating' => $collection->sortByDesc('ratings_avg_rating')->values(),
             'pengunjung' => $collection->sortByDesc('kunjungans_sum_jumlah')->values(),
+            'pengunjung-sedikit' => $collection->sortBy('kunjungans_sum_jumlah')->values(),
             default => $collection,
         };
     }

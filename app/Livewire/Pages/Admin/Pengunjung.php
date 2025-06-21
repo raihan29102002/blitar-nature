@@ -16,10 +16,11 @@ use Livewire\WithFileUploads;
 class Pengunjung extends Component
 {
     use WithPagination, WithoutUrlPagination, WithFileUploads;
-    protected $middleware = ['auth', 'role:admin'];
     public $wisata_id, $jumlah, $bulan, $tahun;
     public $kunjunganId;
     public $editMode = false;
+    public $showModal = false;
+    public $search = '';
     public $excelFile;
     public function importExcel()
     {
@@ -32,7 +33,10 @@ class Pengunjung extends Component
         $this->dispatch('showToast', 'success', 'Data Pengunjung berhasil diimport.');
     }
 
-
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
     public function mount()
     {
         $this->resetFields();
@@ -50,41 +54,57 @@ class Pengunjung extends Component
     public function create()
     {
         $this->resetFields();
-        $this->editMode = true;
+        $this->editMode = false;
+        $this->showModal = true;
     }
 
-    protected $paginationTheme = 'tailwind';
     public function save()
     {
-        $this->validate([
-            'wisata_id' => 'required|exists:wisatas,id',
-            'jumlah' => 'required|numeric|min:0',
-            'bulan' => 'required|integer|min:1|max:12',
-            'tahun' => 'required|integer|min:2000|max:2100',
-        ]);
-
-        if ($this->editMode) {
-            Kunjungan::where('id', $this->kunjunganId)->update([
+        try {
+            $this->validate([
+                'wisata_id' => 'required|numeric',
+                'jumlah' => 'required|numeric|min:0',
+                'bulan' => 'required|numeric|min:1|max:12',
+                'tahun' => 'required|numeric|min:2000|max:2100',
+            ]);
+    
+            if ($this->editMode) {
+                Kunjungan::where('id', $this->kunjunganId)->update([
+                    'wisata_id' => $this->wisata_id,
+                    'jumlah' => $this->jumlah,
+                    'bulan' => $this->bulan,
+                    'tahun' => $this->tahun,
+                ]);
+            } else {
+                Kunjungan::create([
+                    'wisata_id' => $this->wisata_id,
+                    'jumlah' => $this->jumlah,
+                    'bulan' => $this->bulan,
+                    'tahun' => $this->tahun,
+                ]);
+            }
+    
+            $this->dispatch('showToast', 'success', $this->editMode
+                ? 'Data Pengunjung berhasil diupdate.'
+                : 'Data Pengunjung berhasil ditambahkan.');
+    
+            $this->resetFields();
+            \Log::info('Creating new kunjungan', [
                 'wisata_id' => $this->wisata_id,
                 'jumlah' => $this->jumlah,
                 'bulan' => $this->bulan,
                 'tahun' => $this->tahun,
             ]);
-        } else {
-            Kunjungan::create([
+        } catch (\Exception $e) {
+            \Log::info('Creating new kunjungan', [
                 'wisata_id' => $this->wisata_id,
                 'jumlah' => $this->jumlah,
                 'bulan' => $this->bulan,
                 'tahun' => $this->tahun,
             ]);
         }
-
-        $this->dispatch('showToast', $this->editMode ? 'success' : 'success', $this->editMode
-            ? 'Data Pengunjung berhasil diupdate.'
-            : 'Data Pengunjung berhasil ditambahkan.');
-
-        $this->resetFields();
     }
+
 
     public function edit($id)
     {
@@ -95,6 +115,11 @@ class Pengunjung extends Component
         $this->bulan = $kunjungan->bulan;
         $this->tahun = $kunjungan->tahun;
         $this->editMode = true;
+        $this->showModal = true;
+    }
+    public function closeModal()
+    {
+        $this->showModal = false;
     }
 
     public function delete($id)
@@ -105,8 +130,17 @@ class Pengunjung extends Component
 
     public function render()
     {
+        $kunjunganQuery = Kunjungan::with('wisata')
+            ->when($this->search, function ($query) {
+                $query->whereHas('wisata', function ($q) {
+                    $q->where('nama', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc');
+    
         return view('livewire.pages.admin.pengunjung', [
-            'kunjunganList' => Kunjungan::orderBy('tahun', 'desc')->orderBy('bulan', 'desc')->paginate(25),
+            'kunjunganList' => $kunjunganQuery->paginate(25),
             'wisataList' => Wisata::all(),
         ])->layout('layouts.admin');
     }

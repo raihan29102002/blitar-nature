@@ -52,13 +52,26 @@ class Wisata extends Component
             $toast = session('toast');
             $this->dispatch('showToast', $toast['type'], $toast['message']);
         }
-        $wisatas = WisataModel::where('nama', 'like', '%' . $this->search . '%')
-            ->orderBy('nama', $this->sortDirection)
-            ->paginate(10);
-
+    
+        $query = WisataModel::query();
+    
+        // Search by nama
+        $query->where('nama', 'like', '%' . $this->search . '%');
+    
+        // Filter or sort berdasarkan input sortDirection
+        if (in_array($this->sortDirection, ['asc', 'desc'])) {
+            $query->orderBy('nama', $this->sortDirection);
+        } elseif (in_array($this->sortDirection, ['alam', 'budaya', 'buatan'])) {
+            $query->where('kategori', $this->sortDirection)
+                  ->orderByDesc('created_at'); // default urutan
+        }
+    
+        $wisatas = $query->paginate(10);
+    
         return view('livewire.pages.admin.wisata.index', compact('wisatas'))
             ->layout('layouts.admin');
     }
+
 
     public function openModal()
     {

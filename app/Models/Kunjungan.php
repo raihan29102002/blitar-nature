@@ -10,9 +10,13 @@ class Kunjungan extends Model {
     use HasFactory;
     protected $table = 'kunjungan';
     protected $fillable = ['wisata_id', 'jumlah', 'bulan', 'tahun'];
+    
     public function getNamaBulanAttribute()
     {
-        return Carbon::create()->month($this->bulan)->translatedFormat('F');
+        $bulan = (int) $this->bulan;
+        $tahun = $this->tahun ?? now()->year;
+        $tahun = (int) $tahun;
+         return Carbon::createFromDate($tahun, $bulan, 1)->translatedFormat('F');
     }
 
     public function wisata() {

@@ -1,5 +1,5 @@
 <div class="p-6 bg-white shadow-md rounded-lg w-full min-h-screen">
-    <h1 class="text-3xl font-bold mt-6 mb-6 text-gray-700 ">Kelola Review Wisatawan</h1>
+    <h1 class="text-3xl font-bold mt-6 mb-6 text-gray-700 ">Data Review Wisatawan</h1>
 
     <div class="mb-4 relative w-full md:w-1/3">
         <input type="text" wire:model.live="search" placeholder="Cari berdasarkan nama pengguna atau wisata..."
@@ -71,6 +71,6 @@
     </div>
 
     <div class="mt-4">
-        {{ $reviews->links('pagination::tailwind') }}
+        {{ $reviews->links() }}
     </div>
 </div>
